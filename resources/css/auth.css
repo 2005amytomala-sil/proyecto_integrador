@@ -16,3 +16,24 @@
 body {
     background-color: #b1cfec;
 }
+
+.card-register {
+    max-width: 800px;
+}
+
+.register-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 30px;   
+}
+
+.img-register {
+    height: 300px;
+}
+
+.register-body {
+    padding: 2.5rem;
+}
