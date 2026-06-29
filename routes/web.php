@@ -2,6 +2,30 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\IncidenciaController;
+
+use App\Http\Controllers\RolController;
+
+use App\Http\Controllers\PaisController;
+
+use App\Http\Controllers\ProvinciaController;
+
+use App\Http\Controllers\CiudadController;
+
+use App\Http\Controllers\EstadoController;
+
+use App\Http\Controllers\PrioridadController;
+
+use App\Http\Controllers\AsignacionController;
+
+use App\Http\Controllers\HistorialEstadoController;
+
+use App\Http\Controllers\ComentarioController;
+
+use App\Http\Controllers\EvidenciaController;
+
+use App\Http\Controllers\NotificacionController;
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -13,3 +37,31 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
+
+Route::get('/dashboard', function () {
+    return view('dashboard.index');
+})->name('dashboard');  
+
+Route::resource('incidencias', IncidenciaController::class);
+
+Route::resource('roles', RolController::class);
+
+Route::resource('paises', PaisController::class);
+
+Route::resource('provincias', ProvinciaController::class);
+
+Route::resource('ciudades', CiudadController::class);
+
+Route::resource('estados', EstadoController::class);
+
+Route::resource('prioridades', PrioridadController::class);
+
+Route::resource('asignaciones', AsignacionController::class);
+
+Route::resource('historial-estados', HistorialEstadoController::class);
+
+Route::resource('comentarios', ComentarioController::class);
+
+Route::resource('evidencias', EvidenciaController::class);
+
+Route::resource('notificaciones', NotificacionController::class);

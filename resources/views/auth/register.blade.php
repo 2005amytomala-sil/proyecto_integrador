@@ -26,23 +26,23 @@
                 <input type="text" class="form-control" id="inputPhone">
             </div>
             <div class="col-md-6">
-                <label for="inputState" class="form-label">País</label>
-                <select id="inputState" class="form-select">
-                <option selected>Choose...</option>
+                <label for="inputCountry" class="form-label">País</label>
+                <select id="inputCountry" class="form-select">
+                <option selected>Seleccione un país</option>
                 <option>...</option>
                 </select>
             </div>
             <div class="col-md-6">
-                <label for="inputState" class="form-label">Provincia</label>
-                <select id="inputState" class="form-select">
-                <option selected>Choose...</option>
+                <label for="inputProvince" class="form-label">Provincia</label>
+                <select id="inputProvince" class="form-select">
+                <option selected>Seleccione una provincia</option>
                 <option>...</option>
                 </select>
             </div>
             <div class="col-md-4">
-                <label for="inputState" class="form-label">Ciudad</label>
-                <select id="inputState" class="form-select">
-                <option selected>Choose...</option>
+                <label for="inputCity" class="form-label">Ciudad</label>
+                <select id="inputCity" class="form-select">
+                <option selected>Seleccione una ciudad</option>
                 <option>...</option>
                 </select>
             </div>
@@ -51,14 +51,18 @@
                 <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
             </div>
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="inputPassword4">
+                <label for="inputPassword" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="inputPassword">
             </div>
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Confirmar contraseña</label>
-                <input type="password" class="form-control" id="inputPassword4">   
+                <label for="inputPasswordConfirm" class="form-label">Confirmar contraseña</label>
+                <input type="password" class="form-control" id="inputPasswordConfirm">   
             </div>
-                <button type="submit" class="btn btn-primary">Registrar</button>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary w-100">
+                    Registrar
+                </button>
+            </div>
             <div class="text-center mt-3">
                 ¿Ya tienes una cuenta?
                 <a href="{{ route('login') }}">Iniciar sesión</a>
