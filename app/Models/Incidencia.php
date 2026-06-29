@@ -22,6 +22,16 @@ class Incidencia extends Model
         'fecha_resolucion',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'latitud' => 'decimal:8',
+            'longitud' => 'decimal:8',
+            'fecha_resolucion' => 'datetime',
+        ];
+    }
+
+    //Relaciones
     public function ciudadano()
     {
         return $this->belongsTo(User::class, 'ciudadano_id');
@@ -32,12 +42,12 @@ class Incidencia extends Model
         return $this->belongsTo(Ciudad::class);
     }
 
-    public function tipo()
+    public function tipoIncidencia()
     {
         return $this->belongsTo(TipoIncidencia::class, 'tipo_incidencia_id');
     }
 
-    public function subtipo()
+    public function subtipoIncidencia()
     {
         return $this->belongsTo(SubtipoIncidencia::class, 'subtipo_incidencia_id');
     }
