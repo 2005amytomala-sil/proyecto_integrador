@@ -1,42 +1,28 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\IncidenciaController;
-
 use App\Http\Controllers\RolController;
-
 use App\Http\Controllers\PaisController;
-
 use App\Http\Controllers\ProvinciaController;
-
 use App\Http\Controllers\CiudadController;
-
 use App\Http\Controllers\EstadoController;
-
 use App\Http\Controllers\PrioridadController;
-
 use App\Http\Controllers\AsignacionController;
-
 use App\Http\Controllers\HistorialEstadoController;
-
 use App\Http\Controllers\ComentarioController;
-
 use App\Http\Controllers\EvidenciaController;
-
 use App\Http\Controllers\NotificacionController;
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+Route::get('/', [AuthController::class, 'showLogin']);
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', function () {
     return view('dashboard.index');

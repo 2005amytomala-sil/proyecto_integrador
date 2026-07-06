@@ -3,14 +3,42 @@
 ========================= */
 
 .navbar-dashboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     background-color: #9ab0c5;
-    padding: 1rem;
+    padding: 0.75rem 1.25rem;
+    min-height: 72px;
+    position: fixed;
+    top: 0;
+    left: 250px; /* navbar starts to the right of sidebar */
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+    z-index: 1060;
 }
 
-/* =========================
-   SIDEBAR
-========================= */
+/* Navbar when sidebar is hidden */
+body.sidebar-open .navbar-dashboard {
+    left: 0;
+    width: 100%;
+}
 
+/* Small helper: give the page content room below the fixed navbar */
+.page-content {
+    padding-top: 90px;
+    margin-left: 250px; /* leave space for the fixed sidebar */
+}
+
+/* When sidebar is hidden, content should use full width */
+body.sidebar-open .page-content {
+    margin-left: 0;
+}
+
+/* content wrapper (kept for spacing if used) */
+.content-wrapper {
+    padding: 1rem;
+}
 .sidebar {
     width: 250px;
     height: 100vh;
@@ -18,10 +46,10 @@
     border-right: 1px solid #dee2e6;
     position: fixed;
     left: 0;
-    top: 0;
+    top: 0; /* moved to top to remove white gap */
     padding: 1rem;
     transition: all 0.3s ease;
-    z-index: 1051;
+    z-index: 1050;
 }
 
 .sidebar-brand {
@@ -50,9 +78,11 @@
 
 .main-content {
     margin-left: 250px;
+    width: calc(100% - 250px);
     transition: all 0.3s ease;
     min-height: 100vh;
 }
+
 
 /* =========================
    BOTÓN HAMBURGUESA
@@ -77,8 +107,9 @@
         margin-left: -250px;
     }
 
-    body.sidebar-open .main-content {
+    body.sidebar-open .page-content {
         margin-left: 0;
+        width: 100%;
     }
 
 }
@@ -97,7 +128,7 @@
 
     /* El contenido ocupa toda la pantalla */
 
-    .main-content {
+    .page-content {
         margin-left: 0;
         width: 100%;
     }
@@ -133,4 +164,5 @@
         width: 100%;
     }
 
+    
 }

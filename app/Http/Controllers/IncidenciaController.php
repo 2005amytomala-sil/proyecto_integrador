@@ -10,9 +10,20 @@ class IncidenciaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-         return Incidencia::all();
+        if ($request->wantsJson()) {
+            return Incidencia::with([
+                'ciudadano',
+                'ciudad',
+                'tipoIncidencia',
+                'subtipoIncidencia',
+                'estado',
+                'prioridad',
+            ])->get();
+        }
+
+        return view('incidencias.index');
     }
     /**
      * Show the form for creating a new resource.
@@ -60,5 +71,19 @@ class IncidenciaController extends Controller
         return response()->json([
             'mensaje' => 'Incidencia eliminada correctamente'
         ]);
+    }
+
+    public function apiIndex()
+    {
+        $incidencias = \App\Models\Incidencia::with([
+            'ciudadano',
+            'ciudad',
+            'tipoIncidencia',
+            'subtipoIncidencia',
+            'estado',
+            'prioridad'
+        ])->get();
+
+        return response()->json($incidencias);
     }
 }
