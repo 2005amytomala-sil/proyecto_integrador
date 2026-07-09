@@ -1,39 +1,30 @@
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand text-center">
-        <strong>Sistema de Gestión de Incidencias</strong>
+    <div class="sidebar-brand mb-4 text-center">
+        <strong>Sistema de Gestion de incidencias</strong>
     </div>
 
-    <nav class="nav flex-column mt-4">
-        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-            <i class="bi bi-grid"></i> Panel de Control
-        </a>
+    @php
+        $rol = auth()->user()->rol->nombre ?? null;
+    @endphp
 
-        <a class="nav-link {{ request()->routeIs('incidencias.*') ? 'active' : '' }}" href="{{ route('incidencias.index') }}">
-            <i class="bi bi-exclamation-circle"></i> Incidencias
-        </a>
+    @switch($rol)
+        @case('Administrador')
+            @include('components.sidebars.admin')
+            @break
 
-        <a class="nav-link" href="#">
-            <i class="bi bi-calendar-check"></i> Asignaciones
-        </a>
+        @case('Operador')
+            @include('components.sidebars.operador')
+            @break
 
-        <a class="nav-link" href="#">
-            <i class="bi bi-people"></i> Usuarios
-        </a>
+        @case('Responsable')
+            @include('components.sidebars.responsable')
+            @break
 
-        <a class="nav-link" href="#">
-            <i class="bi bi-tags"></i> Categorías
-        </a>
+        @case('Ciudadano')
+            @include('components.sidebars.ciudadano')
+            @break
 
-        <a class="nav-link" href="#">
-            <i class="bi bi-geo-alt"></i> Ubicaciones
-        </a>
-
-        <a class="nav-link" href="#">
-            <i class="bi bi-bar-chart"></i> Informes
-        </a>
-
-        <a class="nav-link" href="#">
-            <i class="bi bi-bell"></i> Notificaciones
-        </a>
-    </nav>
+        @default
+            <p class="text-muted">Rol no asignado</p>
+    @endswitch
 </aside>
