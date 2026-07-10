@@ -14,7 +14,17 @@ class CiudadController extends Controller
     {
         //
     }
-
+    /**
+     * DESPLIEGUE POR PROVINCIA
+     */
+    public function porProvincia($provincia_id)
+    {
+        return response()->json(
+            Ciudad::where('provincia_id', $provincia_id)
+                ->orderBy('nombre')
+                ->get()
+        );
+    }
     /**
      * Show the form for creating a new resource.
      */

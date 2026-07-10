@@ -43,36 +43,25 @@
             </div>
             <div class="col-md-6">
                 <label for="inputCountry" class="form-label">País</label>
-                <select id="inputCountry" class="form-select">
+                <select id="inputCountry" name="pais_id" class="form-select" required>
                 <option selected>Seleccione un país</option>
-                <option>...</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label for="inputProvince" class="form-label">Provincia</label>
-                <select id="inputProvince" class="form-select">
+                <select id="inputProvince" name="provincia_id" class="form-select" required>
                 <option selected>Seleccione una provincia</option>
-                <option>...</option>
                 </select>
             </div>
-            <!--ARREGLO MOMENTANEO, TERMINAR DE IMPLEMENTAR PAIS,PROVINCIA Y CIUDAD DESPUES
-                DE MOMENTO CARGA DIRECTAMENTE LA CIUDAD-->
             <div class="col-md-4">
                 <label for="inputCity" class="form-label">Ciudad</label>
                 <select id="inputCity" name="ciudad_id" class="form-select" required>
                 <option value="">Seleccione una ciudad</option>
-                @foreach ($ciudades as $ciudad)
-                    <option
-                        value="{{ $ciudad->id }}"
-                        {{ old('ciudad_id') == $ciudad->id ? 'selected' : '' }}>
-                        {{ $ciudad->nombre }}
-                    </option>
-                @endforeach
             </select>
             </div>
             <div class="col-md-8">
                 <label for="inputAddress" class="form-label">Dirección</label>
-                <input type="text" name="direccion" class="form-control" id="inputAddress" placeholder="1234 Main St" value="{{ old('direccion') }}">
+                <input type="text" name="direccion" class="form-control" id="inputAddress" placeholder="1234 Main St" value="{{ old('direccion')}}" required>
             </div>
             <div class="col-md-6">
                 <label for="inputPassword" class="form-label">Contraseña</label>
@@ -97,3 +86,86 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const paisSelect = document.getElementById('inputCountry');
+    const provinciaSelect = document.getElementById('inputProvince');
+    const ciudadSelect = document.getElementById('inputCity');
+
+    // Cargar países
+    const paises = await fetch('/api/paises');
+    const listaPaises = await paises.json();
+
+    listaPaises.forEach(pais => {
+        paisSelect.innerHTML += `
+            <option value="${pais.id}">
+                ${pais.nombre}
+            </option>
+        `;
+    });
+
+    // Cuando cambia el país
+    paisSelect.addEventListener('change', async () => {
+
+        provinciaSelect.innerHTML =
+            '<option value="">Seleccione una provincia</option>';
+
+        ciudadSelect.innerHTML =
+            '<option value="">Seleccione una ciudad</option>';
+
+        if (!paisSelect.value)
+            return;
+
+        const respuesta = await fetch(
+            `/api/provincias/${paisSelect.value}`
+        );
+
+        const provincias = await respuesta.json();
+
+        provincias.forEach(provincia => {
+
+            provinciaSelect.innerHTML += `
+                <option value="${provincia.id}">
+                    ${provincia.nombre}
+                </option>
+            `;
+
+        });
+
+    });
+
+    // Cuando cambia la provincia
+    provinciaSelect.addEventListener('change', async () => {
+
+        ciudadSelect.innerHTML =
+            '<option value="">Seleccione una ciudad</option>';
+
+        if (!provinciaSelect.value)
+            return;
+
+        const respuesta = await fetch(
+            `/api/ciudades/${provinciaSelect.value}`
+        );
+
+        const ciudades = await respuesta.json();
+
+        ciudades.forEach(ciudad => {
+
+            ciudadSelect.innerHTML += `
+                <option value="${ciudad.id}">
+                    ${ciudad.nombre}
+                </option>
+            `;
+
+        });
+
+    });
+
+});
+
+</script>
+@endpush

@@ -17,7 +17,8 @@ class Ciudad extends Model
     {
         return $this->belongsTo(Provincia::class);
     }
-
+    // TODO: TOMAR EN CUENTA EN EL DESARROLLO FUTURO EL USU DE ESTOS METODOS
+     
     public function incidencias()
     {
         return $this->hasMany(Incidencia::class);

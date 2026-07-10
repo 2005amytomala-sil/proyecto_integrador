@@ -14,6 +14,18 @@ class ProvinciaController extends Controller
     {
         //
     }
+    /**
+     * DESPLIEGUE POR PAIS.
+     */
+    
+    public function porPais($pais_id)
+    {
+        return response()->json(
+            Provincia::where('pais_id', $pais_id)
+                ->orderBy('nombre')
+                ->get()
+        );
+    }
 
     /**
      * Show the form for creating a new resource.
