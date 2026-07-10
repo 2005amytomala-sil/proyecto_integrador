@@ -12,7 +12,7 @@ class PaisController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Pais::orderBy('nombre')->get());
     }
 
     /**
