@@ -70,7 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><span class="badge bg-info">${incidencia.estado?.nombre ?? '-'}</span></td>
                 <td><span class="badge bg-danger">${incidencia.prioridad?.nombre ?? '-'}</span></td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary">Ver</button>
+                     <a href="/incidencias/${incidencia.id}" class="btn btn-sm btn-outline-primary" title="Ver">
+                        <i class="bi bi-eye"></i>
+                    </a>
+
+                    <a href="/incidencias/${incidencia.id}/edit" class="btn btn-sm btn-outline-secondary" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
                 </td>
             `;
 

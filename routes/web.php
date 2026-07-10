@@ -14,6 +14,7 @@ use App\Http\Controllers\HistorialEstadoController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\EvidenciaController;
 use App\Http\Controllers\NotificacionController;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', [AuthController::class, 'showLogin']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -28,7 +29,9 @@ Route::get('/dashboard', function () {
     return view('dashboard.index');
 })->name('dashboard');  
 
-Route::resource('incidencias', IncidenciaController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('incidencias', IncidenciaController::class);
+});
 
 Route::resource('roles', RolController::class);
 

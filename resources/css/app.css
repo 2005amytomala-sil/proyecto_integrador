@@ -129,8 +129,8 @@ body.sidebar-open .page-content {
 
 .dashboard-card {
     background: #ffffff;
-    border: 0;
-    box-shadow: 0 26px 62px rgba(15, 23, 42, 0.1);
+    border: 1px solid rgba(226,232,240,0.9);
+    box-shadow: 0 26px 62px rgba(15, 23, 42, 0.06);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -156,6 +156,74 @@ body.sidebar-open .page-content {
     letter-spacing: -0.01em;
 }
 
+.upload-dropzone {
+    position: relative;
+    border: 2px dashed rgba(99, 102, 241, 0.4);
+    border-radius: 18px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: rgba(99, 102, 241, 0.04);
+    text-align: center;
+    padding: 1.5rem 1rem;
+}
+
+.upload-dropzone:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.upload-dropzone .upload-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(99, 102, 241, 0.15);
+    color: #4f46e5;
+}
+
+.upload-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.upload-preview-item {
+    width: 90px;
+    height: 90px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-dropzone.drag-active {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: #6366f1;
+}
+
 .dashboard-card .chart-wrapper {
     border-radius: 20px;
     background: transparent;
@@ -163,6 +231,30 @@ body.sidebar-open .page-content {
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: none;
 }
+
+    /* Reportado por card */
+    .reportado-card .profile-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(135deg,#4f46e5 0%,#3b82f6 100%);
+        box-shadow: 0 8px 20px rgba(59,130,246,0.12);
+    }
+
+    .reportado-card .report-name {
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .reportado-card .report-role {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
 
 .dashboard-card .chart-wrapper canvas {
     height: 260px !important;
@@ -207,6 +299,20 @@ body.sidebar-open .page-content {
 
 #latest-incidencias-table tbody td {
     padding: 1rem 1rem;
+}
+
+.evidencia-delete {
+    opacity: 0;
+    transition: 0.2s;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    line-height: 1;
+}
+
+.evidencia-item:hover .evidencia-delete {
+    opacity: 1;
 }
 
 /* =========================

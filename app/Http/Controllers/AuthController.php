@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Rol;
-use App\Models\Ciudad;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\LoginRequest;
@@ -21,9 +20,7 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        $ciudades = Ciudad::all();
-
-        return view('auth.register', compact('ciudades'));
+        return view('auth.register');
     }
 
     public function login(LoginRequest $request)

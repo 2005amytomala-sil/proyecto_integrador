@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Evidencia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EvidenciaController extends Controller
 {
@@ -60,6 +61,16 @@ class EvidenciaController extends Controller
      */
     public function destroy(Evidencia $evidencia)
     {
-        //
+        $incidenciaId = $evidencia->incidencia_id;
+
+        if ($evidencia->archivo && Storage::disk('public')->exists($evidencia->archivo)) {
+            Storage::disk('public')->delete($evidencia->archivo);
+        }
+
+        $evidencia->delete();
+
+        return redirect()
+            ->route('incidencias.edit', $incidenciaId)
+            ->with('success', 'Evidencia eliminada correctamente.');
     }
 }

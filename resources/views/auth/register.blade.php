@@ -8,55 +8,68 @@
     <div class="card-body register-body">
         <h4 class="card-title text-center">Registro ciudadano</h4>
         <p class="card-text text-center">Crea tu cuenta para reportar incidencias.</p>
-        <form class="row g-3">
+        <form method="POST" action="{{ route('register.store') }}" class="row g-3">
+        @csrf
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+            <div class="col-md-6">
+                <label class="form-label">Cédula</label>
+                <input type="text" name="cedula" class="form-control" value="{{ old('cedula') }}" required>
+            </div>
             <div class="col-md-6">
                 <label class="form-label">Nombres</label>
-                <input type="text" class="form-control">
+                <input type="text" name="nombres" class="form-control" value="{{ old('nombres') }}" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Apellidos</label>
-                <input type="text" class="form-control">
+                <input type="text" name="apellidos" class="form-control" value="{{ old('apellidos') }}" required>
             </div>
             <div class="col-md-6">
                 <label for="inputEmail4" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail4">
+                <input type="email" name="email" class="form-control" id="inputEmail4" value="{{ old('email') }}" required>
             </div>
             <div class="col-md-6">
                 <label for="inputPhone" class="form-label">Teléfono</label>
-                <input type="text" class="form-control" id="inputPhone">
+                <input type="text" name="telefono" class="form-control" id="inputPhone" value="{{ old('telefono') }}" required>
             </div>
             <div class="col-md-6">
                 <label for="inputCountry" class="form-label">País</label>
-                <select id="inputCountry" class="form-select">
+                <select id="inputCountry" name="pais_id" class="form-select" required>
                 <option selected>Seleccione un país</option>
-                <option>...</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label for="inputProvince" class="form-label">Provincia</label>
-                <select id="inputProvince" class="form-select">
+                <select id="inputProvince" name="provincia_id" class="form-select" required>
                 <option selected>Seleccione una provincia</option>
-                <option>...</option>
                 </select>
             </div>
             <div class="col-md-4">
                 <label for="inputCity" class="form-label">Ciudad</label>
-                <select id="inputCity" class="form-select">
-                <option selected>Seleccione una ciudad</option>
-                <option>...</option>
-                </select>
+                <select id="inputCity" name="ciudad_id" class="form-select" required>
+                <option value="">Seleccione una ciudad</option>
+            </select>
             </div>
             <div class="col-md-8">
                 <label for="inputAddress" class="form-label">Dirección</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                <input type="text" name="direccion" class="form-control" id="inputAddress" placeholder="1234 Main St" value="{{ old('direccion')}}" required>
             </div>
             <div class="col-md-6">
                 <label for="inputPassword" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="inputPassword">
+                <input type="password" name="password" class="form-control" id="inputPassword" required>
             </div>
             <div class="col-md-6">
                 <label for="inputPasswordConfirm" class="form-label">Confirmar contraseña</label>
-                <input type="password" class="form-control" id="inputPasswordConfirm">   
+                <input type="password" name="password_confirmation" class="form-control" id="inputPasswordConfirm">   
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary w-100">
@@ -73,3 +86,86 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const paisSelect = document.getElementById('inputCountry');
+    const provinciaSelect = document.getElementById('inputProvince');
+    const ciudadSelect = document.getElementById('inputCity');
+
+    // Cargar países
+    const paises = await fetch('/api/paises');
+    const listaPaises = await paises.json();
+
+    listaPaises.forEach(pais => {
+        paisSelect.innerHTML += `
+            <option value="${pais.id}">
+                ${pais.nombre}
+            </option>
+        `;
+    });
+
+    // Cuando cambia el país
+    paisSelect.addEventListener('change', async () => {
+
+        provinciaSelect.innerHTML =
+            '<option value="">Seleccione una provincia</option>';
+
+        ciudadSelect.innerHTML =
+            '<option value="">Seleccione una ciudad</option>';
+
+        if (!paisSelect.value)
+            return;
+
+        const respuesta = await fetch(
+            `/api/provincias/${paisSelect.value}`
+        );
+
+        const provincias = await respuesta.json();
+
+        provincias.forEach(provincia => {
+
+            provinciaSelect.innerHTML += `
+                <option value="${provincia.id}">
+                    ${provincia.nombre}
+                </option>
+            `;
+
+        });
+
+    });
+
+    // Cuando cambia la provincia
+    provinciaSelect.addEventListener('change', async () => {
+
+        ciudadSelect.innerHTML =
+            '<option value="">Seleccione una ciudad</option>';
+
+        if (!provinciaSelect.value)
+            return;
+
+        const respuesta = await fetch(
+            `/api/ciudades/${provinciaSelect.value}`
+        );
+
+        const ciudades = await respuesta.json();
+
+        ciudades.forEach(ciudad => {
+
+            ciudadSelect.innerHTML += `
+                <option value="${ciudad.id}">
+                    ${ciudad.nombre}
+                </option>
+            `;
+
+        });
+
+    });
+
+});
+
+</script>
+@endpush
