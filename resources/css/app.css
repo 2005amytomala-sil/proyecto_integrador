@@ -97,6 +97,118 @@ body.sidebar-open .page-content {
     padding: 0;
 }
 
+.dashboard-stat-card,
+.dashboard-card,
+.table-responsive.rounded-4 {
+    border-radius: 22px;
+}
+
+.dashboard-stat-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 22px 40px rgba(15, 23, 42, 0.08);
+}
+
+.dashboard-stat-card .card-body {
+    padding: 1.75rem 1.5rem;
+    min-height: 140px;
+}
+
+.dashboard-stat-card p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-stat-card h3 {
+    font-size: 2.5rem;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    margin-bottom: 0;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border: 0;
+    box-shadow: 0 26px 62px rgba(15, 23, 42, 0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-card:hover,
+.dashboard-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.12);
+}
+
+.dashboard-card .card-body,
+.dashboard-stat-card .card-body {
+    padding: 1.75rem 1.75rem;
+}
+
+.dashboard-card p,
+.dashboard-stat-card p {
+    color: #64748b;
+}
+
+.dashboard-card h5 {
+    color: #0f172a;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.dashboard-card .chart-wrapper {
+    border-radius: 20px;
+    background: transparent;
+    padding: 0.75rem;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: none;
+}
+
+.dashboard-card .chart-wrapper canvas {
+    height: 260px !important;
+}
+
+.table-responsive.rounded-4 {
+    background: transparent;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 22px 48px rgba(15, 23, 42, 0.06);
+    border: none;
+}
+
+#latest-incidencias-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#latest-incidencias-table thead {
+    background: #eff6ff;
+}
+
+#latest-incidencias-table th,
+#latest-incidencias-table td {
+    vertical-align: middle;
+    border-top: 0;
+}
+
+#latest-incidencias-table th {
+    color: #1e293b;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+#latest-incidencias-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+#latest-incidencias-table tbody tr:hover {
+    background: rgba(56, 112, 255, 0.1);
+}
+
+#latest-incidencias-table tbody td {
+    padding: 1rem 1rem;
+}
+
 /* =========================
    ESCRITORIO
 ========================= */
