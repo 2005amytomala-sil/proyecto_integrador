@@ -144,7 +144,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Ciudadano</label>
+                            <label class="form-label">Ciudadano Reportante</label>
                             <select name="ciudadano_id" class="form-select" required>
                                 <option value="">Seleccione...</option>
                                 @foreach($ciudadanos as $ciudadano)

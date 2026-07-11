@@ -16,10 +16,24 @@
             <small class="text-muted">Incidente #{{ $incidencia->id }}</small>
         </div>
 
-        <div>
-            <a href="{{ route('incidencias.edit', $incidencia->id) }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-pencil-square me-1"></i> Editar Incidencia
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('incidencias.edit', $incidencia->id) }}"
+            class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil-square me-1"></i>
+                Editar Incidencia
             </a>
+
+            <form action="{{ route('incidencias.destroy', $incidencia->id) }}"
+                method="POST"
+                onsubmit="return confirm('¿Está seguro de eliminar esta incidencia? Esta acción no se puede deshacer.');">
+                @csrf
+                @method('DELETE')
+
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash me-1"></i>
+                    Eliminar
+                </button>
+            </form>
         </div>
     </div>
 
@@ -46,7 +60,16 @@
                             <div class="small text-muted">Prioridad</div>
                             <div>
                                 @if(optional($incidencia->prioridad)->nombre)
-                                    <span class="badge bg-danger">{{ $incidencia->prioridad->nombre }}</span>
+                                    @php
+                                        $prioridadNombre = $incidencia->prioridad->nombre;
+                                        $prioridadClass = match(strtolower($prioridadNombre)) {
+                                            'baja' => 'bg-success',
+                                            'media', 'media-baja', 'moderada' => 'bg-warning text-dark',
+                                            'alta', 'urgente' => 'bg-danger',
+                                            default => 'bg-secondary',
+                                        };
+                                    @endphp
+                                    <span class="badge {{ $prioridadClass }}">{{ $prioridadNombre }}</span>
                                 @else
                                     —
                                 @endif
@@ -122,14 +145,25 @@
         <div class="col-lg-4">
             <div class="card dashboard-card mb-3">
                 <div class="card-body">
-                    <h6 class="mb-2">Estado Actual</h6>
-                    <div>
+                    <h6 class="mb-3">Estado Actual</h6>
+
+                    <div class="mb-3">
                         @if(optional($incidencia->estado)->nombre)
-                            <span class="badge bg-info text-dark">{{ $incidencia->estado->nombre }}</span>
+                            <span class="badge bg-info text-dark">
+                                {{ $incidencia->estado->nombre }}
+                            </span>
                         @else
                             <span class="text-muted">Sin estado</span>
                         @endif
                     </div>
+
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#cambiarEstadoModal">
+                        <i class="bi bi-arrow-repeat me-1"></i>
+                        Cambiar estado
+                    </button>
                 </div>
             </div>
 
@@ -167,23 +201,144 @@
 
             <div class="card dashboard-card mb-3">
                 <div class="card-body">
-                    <h6 class="mb-2">Historial de Estados</h6>
-                    @if(optional($incidencia)->historialEstados && $incidencia->historialEstados->count())
-                        <ul class="list-unstyled small mb-0">
-                            @foreach($incidencia->historialEstados as $h)
-                                <li class="mb-3">
-                                    <div class="fw-semibold">{{ $h->estado->nombre ?? $h->estado_nombre ?? 'Estado' }}</div>
-                                    <div class="text-muted small">{{ optional($h->created_at)->format('d/m/Y H:i') }} · {{ $h->usuario_nombre ?? '' }}</div>
-                                </li>
+                    <h6 class="mb-3">Historial de Estados</h6>
+
+                    @if($incidencia->historialEstados->count())
+                        <div class="estado-timeline">
+                            @foreach($incidencia->historialEstados as $historial)
+                                @php
+                                    $usuario = $historial->usuario;
+
+                                    $nombreUsuario = $usuario
+                                        ? trim($usuario->nombres . ' ' . $usuario->apellidos)
+                                        : 'Usuario no disponible';
+                                @endphp
+
+                                <div class="d-flex mb-3">
+                                    <div class="me-3">
+                                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary"
+                                            style="width: 28px; height: 28px;">
+                                            <i class="bi bi-check-circle"></i>
+                                        </span>
+                                    </div>
+
+                                    <div class="flex-grow-1">
+                                        <div class="fw-semibold">
+                                            {{ $historial->estado->nombre ?? 'Estado no disponible' }}
+                                        </div>
+
+                                        <div class="small text-muted">
+                                            Cambiado por {{ $nombreUsuario }}
+                                        </div>
+
+                                        <div class="small text-muted">
+                                            {{ optional($historial->created_at)->format('d/m/Y H:i') }}
+                                        </div>
+
+                                        @if($historial->observacion)
+                                            <div class="small mt-1">
+                                                {{ $historial->observacion }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                             @endforeach
-                        </ul>
+                        </div>
                     @else
-                        <div class="text-muted">No hay historial registrado.</div>
+                        <div class="text-muted">
+                            No hay cambios de estado registrados.
+                        </div>
                     @endif
                 </div>
             </div>
         </div>
     </div>
+</div>
 
+<div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-labelledby="cambiarEstadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form action="{{ route('incidencias.cambiar-estado', $incidencia) }}"
+                  method="POST">
+
+                @csrf
+                @method('PATCH')
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cambiarEstadoModalLabel">
+                        Cambiar estado de la incidencia
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="estado_id" class="form-label">
+                            Nuevo estado
+                        </label>
+
+                        <select name="estado_id"
+                                id="estado_id"
+                                class="form-select"
+                                required>
+
+                            <option value="">Seleccione...</option>
+
+                            @foreach($estados as $estado)
+                                <option value="{{ $estado->id }}"
+                                    {{ $incidencia->estado_id == $estado->id ? 'disabled' : '' }}>
+                                    {{ $estado->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('estado_id')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="observacion" class="form-label">
+                            Observación
+                        </label>
+
+                        <textarea name="observacion"
+                                  id="observacion"
+                                  class="form-control"
+                                  rows="3"
+                                  maxlength="500"
+                                  placeholder="Describa el motivo del cambio de estado...">{{ old('observacion') }}</textarea>
+
+                        @error('observacion')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Guardar cambio
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 </div>
 @endsection
