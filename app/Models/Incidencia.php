@@ -69,7 +69,8 @@ class Incidencia extends Model
 
     public function historialEstados()
     {
-        return $this->hasMany(HistorialEstado::class);
+        return $this->hasMany(HistorialEstado::class)
+        ->orderBy('created_at', 'desc');
     }
 
     public function comentarios()

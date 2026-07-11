@@ -31,6 +31,11 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('incidencias', IncidenciaController::class);
+
+    Route::patch(
+        '/incidencias/{incidencia}/estado',
+        [IncidenciaController::class, 'cambiarEstado']
+    )->name('incidencias.cambiar-estado');
 });
 
 Route::resource('roles', RolController::class);
