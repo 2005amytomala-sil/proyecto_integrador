@@ -114,19 +114,23 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Evitar que un administrador se desactive a sí mismo
+        // Evitar que un administrador cambie su propio estado
         if (auth()->id() === $user->id) {
             return redirect()
                 ->route('users.index')
-                ->with('error', 'No puede desactivar su propio usuario.');
+                ->with('error', 'No puede cambiar el estado de su propio usuario.');
         }
 
-        $user->activo = false;
+        $user->activo = !$user->activo;
 
         $user->save();
 
+        $mensaje = $user->activo
+            ? 'Usuario activado correctamente.'
+            : 'Usuario desactivado correctamente.';
+
         return redirect()
             ->route('users.index')
-            ->with('success', 'Usuario desactivado correctamente.');
+            ->with('success', $mensaje);
     }
 }

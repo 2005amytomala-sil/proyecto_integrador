@@ -25,7 +25,11 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->validated();
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+            'activo' => true,
+        ];
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -33,9 +37,20 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
+        $usuario = User::where('email', $request->email)->first();
+
+        if ($usuario && !$usuario->activo) {
+
+            return back()->withErrors([
+                'email' => 'Su cuenta ha sido desactivada. Contacte al administrador.',
+            ]);
+
+        }
+
         return back()->withErrors([
             'email' => 'Las credenciales no son correctas.',
         ]);
+        
     }
 
     public function register(RegisterRequest $request)
