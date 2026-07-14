@@ -13,7 +13,25 @@
     </a>
 
     </div>
+        @if(session('success'))
 
+        <div class="alert alert-success">
+
+            {{ session('success') }}
+
+        </div>
+
+    @endif
+
+    @if(session('error'))
+
+        <div class="alert alert-danger">
+
+            {{ session('error') }}
+
+        </div>
+
+    @endif
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -54,11 +72,13 @@
                 <td>
 
                     <a href="{{ route('users.edit', $usuario) }}"
-                        class="btn btn-warning btn-sm">
+                        class="btn btn-warning btn-sm me-1">
 
                         <i class="bi bi-pencil"></i>
 
                     </a>
+
+                    @if(auth()->id() != $usuario->id)
 
                     <form action="{{ route('users.destroy', $usuario) }}"
                         method="POST"
@@ -67,15 +87,39 @@
                         @csrf
                         @method('DELETE')
 
-                        <button
-                            class="btn btn-danger btn-sm"
-                            onclick="return confirm('¿Desea desactivar este usuario?')">
+                        @if($usuario->activo)
 
-                            <i class="bi bi-person-x"></i>
+                            <button
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('¿Desea desactivar este usuario?')">
 
-                        </button>
+                                <i class="bi bi-person-x"></i>
+                                Desactivar
+
+                            </button>
+
+                        @else
+
+                            <button
+                                class="btn btn-success btn-sm"
+                                onclick="return confirm('¿Desea activar este usuario?')">
+
+                                <i class="bi bi-person-check"></i>
+                                Activar
+
+                            </button>
+
+                        @endif
 
                     </form>
+
+                @else
+
+                    <span class="badge bg-secondary">
+                        Usuario actual
+                    </span>
+
+                @endif
 
                 </td>
             </tr>

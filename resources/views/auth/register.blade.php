@@ -84,88 +84,14 @@
     </div>
     </div>
 </div>
-
 @endsection
 
 @push('scripts')
 <script>
-
-document.addEventListener('DOMContentLoaded', async () => {
-
-    const paisSelect = document.getElementById('inputCountry');
-    const provinciaSelect = document.getElementById('inputProvince');
-    const ciudadSelect = document.getElementById('inputCity');
-
-    // Cargar países
-    const paises = await fetch('/api/paises');
-    const listaPaises = await paises.json();
-
-    listaPaises.forEach(pais => {
-        paisSelect.innerHTML += `
-            <option value="${pais.id}">
-                ${pais.nombre}
-            </option>
-        `;
-    });
-
-    // Cuando cambia el país
-    paisSelect.addEventListener('change', async () => {
-
-        provinciaSelect.innerHTML =
-            '<option value="">Seleccione una provincia</option>';
-
-        ciudadSelect.innerHTML =
-            '<option value="">Seleccione una ciudad</option>';
-
-        if (!paisSelect.value)
-            return;
-
-        const respuesta = await fetch(
-            `/api/provincias/${paisSelect.value}`
-        );
-
-        const provincias = await respuesta.json();
-
-        provincias.forEach(provincia => {
-
-            provinciaSelect.innerHTML += `
-                <option value="${provincia.id}">
-                    ${provincia.nombre}
-                </option>
-            `;
-
-        });
-
-    });
-
-    // Cuando cambia la provincia
-    provinciaSelect.addEventListener('change', async () => {
-
-        ciudadSelect.innerHTML =
-            '<option value="">Seleccione una ciudad</option>';
-
-        if (!provinciaSelect.value)
-            return;
-
-        const respuesta = await fetch(
-            `/api/ciudades/${provinciaSelect.value}`
-        );
-
-        const ciudades = await respuesta.json();
-
-        ciudades.forEach(ciudad => {
-
-            ciudadSelect.innerHTML += `
-                <option value="${ciudad.id}">
-                    ${ciudad.nombre}
-                </option>
-            `;
-
-        });
-
-    });
-
-});
-
+    window.ubicacion = {
+        pais: "{{ old('pais_id') }}",
+        provincia: "{{ old('provincia_id') }}",
+        ciudad: "{{ old('ciudad_id') }}"
+    };
 </script>
 @endpush
