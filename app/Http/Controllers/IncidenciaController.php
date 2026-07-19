@@ -10,7 +10,9 @@ use App\Models\SubtipoIncidencia;
 use App\Models\Estado;
 use App\Models\Prioridad;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use App\Models\HistorialEstado;
+use Illuminate\Support\Facades\DB;
 
 class IncidenciaController extends Controller
 {
@@ -27,7 +29,7 @@ class IncidenciaController extends Controller
                 'subtipoIncidencia',
                 'estado',
                 'prioridad',
-            ])->get();
+            ])->orderBy('id')->get();
         }
 
         return view('incidencias.index');
@@ -73,32 +75,34 @@ class IncidenciaController extends Controller
             'evidencia.*' => 'image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
-        // Buscar el estado inicial del flujo
+        // Buscar el estado inicial
         $estadoRegistrada = Estado::where('nombre', 'Registrada')->first();
 
         if (!$estadoRegistrada) {
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->withInput()
                 ->with('error', 'No existe el estado inicial "Registrada".');
         }
 
         $validated['estado_id'] = $estadoRegistrada->id;
 
+        DB::transaction(function () use ($request, $validated) {
+
+        // Crear incidencia
         $incidencia = Incidencia::create($validated);
 
-        HistorialEstado::create([
-            'incidencia_id' => $incidencia->id,
-            'estado_id' => $estadoRegistrada->id,
-            'usuario_id' => auth()->id(),
-            'observacion' => 'Incidencia registrada.',
-        ]);
-
+        // Guardar evidencias
         if ($request->hasFile('evidencia')) {
+
             foreach ($request->file('evidencia') as $file) {
+
                 if ($file && $file->isValid()) {
+
                     $path = $file->store('evidencias', 'public');
+
                     $incidencia->evidencias()->create([
-                        'usuario_id' => $validated['ciudadano_id'],
+                        'usuario_id' => auth()->id(),
                         'archivo' => $path,
                         'tipo' => 'imagen',
                         'descripcion' => 'Evidencia cargada al crear la incidencia.',
@@ -107,16 +111,26 @@ class IncidenciaController extends Controller
             }
         }
 
-        return redirect()
-            ->route('incidencias.index')
-            ->with('success', 'Incidencia registrada correctamente.');
+        // Registrar primer estado en el historial
+        HistorialEstado::create([
+            'incidencia_id' => $incidencia->id,
+            'estado_id' => $incidencia->estado_id,
+            'usuario_id' => auth()->id(),
+            'observacion' => 'Incidencia registrada en el sistema.',
+        ]);
+
+    });
+
+    return redirect()
+        ->route('incidencias.index')
+        ->with('success', 'Incidencia registrada correctamente.');
     }
     /**
      * Display the specified resource.
      */
     public function show(Incidencia $incidencia)
     {
-         $incidencia->load([
+        $incidencia->load([
             'ciudadano',
             'ciudad',
             'tipoIncidencia',
@@ -124,9 +138,17 @@ class IncidenciaController extends Controller
             'estado',
             'prioridad',
             'evidencias',
+            'comentarios',
+            'historialEstados.estado',
+            'historialEstados.usuario',
         ]);
 
-        return view('incidencias.show', compact('incidencia'));
+        $estados = Estado::orderBy('nombre')->get();
+
+        return view('incidencias.show', compact(
+            'incidencia',
+            'estados'
+        ));
     }
     /**
      * Show the form for editing the specified resource.
@@ -212,14 +234,61 @@ class IncidenciaController extends Controller
         return redirect()
             ->route('incidencias.show', $incidencia->id)
             ->with('success', 'Incidencia actualizada correctamente.');
-            }
-    
+
+            return redirect()
+                ->route('incidencias.index')
+                ->with('success', 'Incidencia actualizada correctamente.');
+    }
+
+    public function cambiarEstado(Request $request, Incidencia $incidencia)
+    {
+        $validated = $request->validate([
+        'estado_id' => 'required|exists:estados,id',
+        'observacion' => 'nullable|string|max:500',
+        ]);
+
+        if ((int) $incidencia->estado_id === (int) $validated['estado_id']) {
+            return redirect()
+                ->route('incidencias.show', $incidencia)
+                ->with('error', 'La incidencia ya se encuentra en ese estado.');
+        }
+
+        DB::transaction(function () use ($incidencia, $validated) {
+            $incidencia->update([
+                'estado_id' => $validated['estado_id'],
+            ]);
+
+            HistorialEstado::create([
+                'incidencia_id' => $incidencia->id,
+                'estado_id' => $validated['estado_id'],
+                'usuario_id' => auth()->id(),
+                'observacion' => $validated['observacion'] ?? null,
+            ]);
+        });
+
+        return redirect()
+            ->route('incidencias.show', $incidencia)
+            ->with('success', 'Estado de la incidencia actualizado correctamente.');
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Incidencia $incidencia)
     {
+        foreach ($incidencia->evidencias as $evidencia) {
+        if (
+            $evidencia->archivo &&
+            \Illuminate\Support\Facades\Storage::disk('public')->exists($evidencia->archivo)
+        ) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($evidencia->archivo);
+        }
+
+            $evidencia->delete();
+        }
+
         $incidencia->delete();
+
         return redirect()
             ->route('incidencias.index')
             ->with('success', 'Incidencia eliminada correctamente.');
@@ -234,7 +303,7 @@ class IncidenciaController extends Controller
             'subtipoIncidencia',
             'estado',
             'prioridad'
-        ])->get();
+        ])->orderBy('id')->get();
 
         return response()->json($incidencias);
     }

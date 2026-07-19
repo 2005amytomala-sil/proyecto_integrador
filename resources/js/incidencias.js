@@ -41,6 +41,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function getEstadoBadgeClass(nombre) {
+        switch ((nombre || '').trim().toLowerCase()) {
+            case 'registrada':
+                return 'bg-primary';
+            case 'en proceso':
+                return 'bg-warning text-dark';
+            case 'resuelta':
+                return 'bg-success';
+            case 'cerrada':
+                return 'bg-dark';
+            case 'pendiente':
+                return 'bg-secondary';
+            default:
+                return 'bg-info text-dark';
+        }
+    }
+
+    function getPrioridadBadgeClass(nombre) {
+        switch ((nombre || '').trim().toLowerCase()) {
+            case 'baja':
+                return 'bg-success';
+            case 'media':
+            case 'media-baja':
+            case 'moderada':
+                return 'bg-warning text-dark';
+            case 'alta':
+            case 'urgente':
+                return 'bg-danger';
+            default:
+                return 'bg-secondary';
+        }
+    }
+
     function renderizarTabla(data) {
         tbody.innerHTML = '';
 
@@ -59,6 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         data.forEach(incidencia => {
             const fila = document.createElement('tr');
+            const estadoNombre = incidencia.estado?.nombre ?? '-';
+            const prioridadNombre = incidencia.prioridad?.nombre ?? '-';
 
             fila.innerHTML = `
                 <td>${incidencia.id}</td>
@@ -67,8 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${incidencia.subtipo_incidencia?.nombre ?? '-'}</td>
                 <td>${incidencia.ciudad?.nombre ?? '-'}</td>
                 <td>${incidencia.ciudadano?.nombres ?? ''} ${incidencia.ciudadano?.apellidos ?? ''}</td>
-                <td><span class="badge bg-info">${incidencia.estado?.nombre ?? '-'}</span></td>
-                <td><span class="badge bg-danger">${incidencia.prioridad?.nombre ?? '-'}</span></td>
+                <td><span class="badge ${getEstadoBadgeClass(estadoNombre)}">${estadoNombre}</span></td>
+                <td><span class="badge ${getPrioridadBadgeClass(prioridadNombre)}">${prioridadNombre}</span></td>
                 <td>
                      <a href="/incidencias/${incidencia.id}" class="btn btn-sm btn-outline-primary" title="Ver">
                         <i class="bi bi-eye"></i>

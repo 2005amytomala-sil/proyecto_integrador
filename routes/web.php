@@ -14,7 +14,6 @@ use App\Http\Controllers\HistorialEstadoController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\EvidenciaController;
 use App\Http\Controllers\NotificacionController;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\UserController;
 
 Route::get('/', [AuthController::class, 'showLogin']);
@@ -33,6 +32,11 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::resource('incidencias', IncidenciaController::class);
+
+    Route::patch(
+        '/incidencias/{incidencia}/estado',
+        [IncidenciaController::class, 'cambiarEstado']
+    )->name('incidencias.cambiar-estado');
 
     Route::resource('roles', RolController::class);
 

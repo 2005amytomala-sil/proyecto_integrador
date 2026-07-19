@@ -103,6 +103,39 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
+    function getEstadoBadgeClass(nombre) {
+        switch ((nombre || '').trim().toLowerCase()) {
+            case 'registrada':
+                return 'bg-primary';
+            case 'en proceso':
+                return 'bg-warning text-dark';
+            case 'resuelta':
+                return 'bg-success';
+            case 'cerrada':
+                return 'bg-dark';
+            case 'pendiente':
+                return 'bg-secondary';
+            default:
+                return 'bg-info text-dark';
+        }
+    }
+
+    function getPrioridadBadgeClass(nombre) {
+        switch ((nombre || '').trim().toLowerCase()) {
+            case 'baja':
+                return 'bg-success';
+            case 'media':
+            case 'media-baja':
+            case 'moderada':
+                return 'bg-warning text-dark';
+            case 'alta':
+            case 'urgente':
+                return 'bg-danger';
+            default:
+                return 'bg-secondary';
+        }
+    }
+
     function countByRelation(incidencias, relation, key) {
         return incidencias.reduce((acc, incidencia) => {
             const obj = incidencia[relation];
@@ -141,12 +174,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? new Date(item.created_at).toLocaleDateString('es-ES')
                 : '-';
 
+            const estadoNombre = item.estado?.nombre ?? '-';
+            const prioridadNombre = item.prioridad?.nombre ?? '-';
+
             return `
                 <tr>
                     <td>${item.id}</td>
                     <td>${item.titulo ?? '-'}</td>
-                    <td>${item.estado?.nombre ?? '-'}</td>
-                    <td>${item.prioridad?.nombre ?? '-'}</td>
+                    <td><span class="badge ${getEstadoBadgeClass(estadoNombre)}">${estadoNombre}</span></td>
+                    <td><span class="badge ${getPrioridadBadgeClass(prioridadNombre)}">${prioridadNombre}</span></td>
                     <td>${fecha}</td>
                     <td>
                         <a href="/incidencias/${item.id}" class="btn btn-sm btn-outline-secondary">
