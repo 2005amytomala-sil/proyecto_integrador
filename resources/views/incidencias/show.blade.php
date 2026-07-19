@@ -157,13 +157,6 @@
                         @endif
                     </div>
 
-                    <button type="button"
-                            class="btn btn-outline-primary btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#cambiarEstadoModal">
-                        <i class="bi bi-arrow-repeat me-1"></i>
-                        Cambiar estado
-                    </button>
                 </div>
             </div>
 
@@ -255,90 +248,4 @@
     </div>
 </div>
 
-<div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-labelledby="cambiarEstadoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <form action="{{ route('incidencias.cambiar-estado', $incidencia) }}"
-                  method="POST">
-
-                @csrf
-                @method('PATCH')
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cambiarEstadoModalLabel">
-                        Cambiar estado de la incidencia
-                    </h5>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Cerrar">
-                    </button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="mb-3">
-                        <label for="estado_id" class="form-label">
-                            Nuevo estado
-                        </label>
-
-                        <select name="estado_id"
-                                id="estado_id"
-                                class="form-select"
-                                required>
-
-                            <option value="">Seleccione...</option>
-
-                            @foreach($estados as $estado)
-                                <option value="{{ $estado->id }}"
-                                    {{ $incidencia->estado_id == $estado->id ? 'disabled' : '' }}>
-                                    {{ $estado->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                        @error('estado_id')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="observacion" class="form-label">
-                            Observación
-                        </label>
-
-                        <textarea name="observacion"
-                                  id="observacion"
-                                  class="form-control"
-                                  rows="3"
-                                  maxlength="500"
-                                  placeholder="Describa el motivo del cambio de estado...">{{ old('observacion') }}</textarea>
-
-                        @error('observacion')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Guardar cambio
-                    </button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-</div>
 @endsection

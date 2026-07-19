@@ -240,36 +240,6 @@ class IncidenciaController extends Controller
                 ->with('success', 'Incidencia actualizada correctamente.');
     }
 
-    public function cambiarEstado(Request $request, Incidencia $incidencia)
-    {
-        $validated = $request->validate([
-        'estado_id' => 'required|exists:estados,id',
-        'observacion' => 'nullable|string|max:500',
-        ]);
-
-        if ((int) $incidencia->estado_id === (int) $validated['estado_id']) {
-            return redirect()
-                ->route('incidencias.show', $incidencia)
-                ->with('error', 'La incidencia ya se encuentra en ese estado.');
-        }
-
-        DB::transaction(function () use ($incidencia, $validated) {
-            $incidencia->update([
-                'estado_id' => $validated['estado_id'],
-            ]);
-
-            HistorialEstado::create([
-                'incidencia_id' => $incidencia->id,
-                'estado_id' => $validated['estado_id'],
-                'usuario_id' => auth()->id(),
-                'observacion' => $validated['observacion'] ?? null,
-            ]);
-        });
-
-        return redirect()
-            ->route('incidencias.show', $incidencia)
-            ->with('success', 'Estado de la incidencia actualizado correctamente.');
-    }
 
     /**
      * Remove the specified resource from storage.

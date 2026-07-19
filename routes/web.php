@@ -33,11 +33,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('incidencias', IncidenciaController::class);
 
-    Route::patch(
-        '/incidencias/{incidencia}/estado',
-        [IncidenciaController::class, 'cambiarEstado']
-    )->name('incidencias.cambiar-estado');
-
     Route::resource('roles', RolController::class);
 
     Route::resource('paises', PaisController::class);
@@ -60,8 +55,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('notificaciones', NotificacionController::class);
     
-    Route::patch('/incidencias/{incidencia}/estado', [IncidenciaController::class, 'cambiarEstado']
-    )->name('incidencias.estado');
 
 });
 
