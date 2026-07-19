@@ -55,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('evidencias', EvidenciaController::class);
 
     Route::resource('notificaciones', NotificacionController::class);
+    
+    Route::patch('/incidencias/{incidencia}/estado', [IncidenciaController::class, 'cambiarEstado']
+    )->name('incidencias.estado');
 
 });
 

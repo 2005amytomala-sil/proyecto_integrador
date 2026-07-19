@@ -10,6 +10,7 @@ use App\Models\SubtipoIncidencia;
 use App\Models\Estado;
 use App\Models\Prioridad;
 use App\Models\User;
+use App\Models\HistorialEstado;
 
 class IncidenciaController extends Controller
 {
@@ -85,6 +86,13 @@ class IncidenciaController extends Controller
 
         $incidencia = Incidencia::create($validated);
 
+        HistorialEstado::create([
+            'incidencia_id' => $incidencia->id,
+            'estado_id' => $estadoRegistrada->id,
+            'usuario_id' => auth()->id(),
+            'observacion' => 'Incidencia registrada.',
+        ]);
+
         if ($request->hasFile('evidencia')) {
             foreach ($request->file('evidencia') as $file) {
                 if ($file && $file->isValid()) {
@@ -129,6 +137,7 @@ class IncidenciaController extends Controller
         $tipos = TipoIncidencia::orderBy('nombre')->get();
         $subtipos = SubtipoIncidencia::orderBy('nombre')->get();
         $prioridades = Prioridad::orderBy('nombre')->get();
+        $estados = Estado::orderBy('orden')->get();
 
         $ciudadanos = User::whereHas('rol', function ($query) {
             $query->where('nombre', 'Ciudadano');
@@ -140,7 +149,8 @@ class IncidenciaController extends Controller
             'tipos',
             'subtipos',
             'prioridades',
-            'ciudadanos'
+            'ciudadanos',
+            'estados'
         ));
     }
     /**
@@ -154,6 +164,7 @@ class IncidenciaController extends Controller
             'tipo_incidencia_id' => 'required|exists:tipos_incidencia,id',
             'subtipo_incidencia_id' => 'required|exists:subtipos_incidencia,id',
             'prioridad_id' => 'required|exists:prioridades,id',
+            'estado_id' => 'required|exists:estados,id',
             'titulo' => 'required|string|max:150',
             'descripcion' => 'required|string',
             'latitud' => 'nullable|numeric|between:-90,90',
@@ -162,16 +173,47 @@ class IncidenciaController extends Controller
             'evidencia.*' => 'image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
-         $incidencia->update($validated);
+        $estadoAnterior = Estado::find($incidencia->estado_id);
+        $incidencia->update($validated);
+        $estadoNuevo = Estado::find($incidencia->estado_id);
+
+        // Actualizar fecha de resolución
+
+        $estadoResuelta = Estado::where('nombre', 'Resuelta')->first();
+
+        if ($estadoResuelta) {
+
+            if ($incidencia->estado_id == $estadoResuelta->id) {
+
+                $incidencia->fecha_resolucion = now();
+
+            } else {
+
+                $incidencia->fecha_resolucion = null;
+
+            }
+
+            $incidencia->save();
+        }
+
+        // Registrar historial
+
+        if ($estadoAnterior->id != $estadoNuevo->id) {
+
+            HistorialEstado::create([
+                'incidencia_id' => $incidencia->id,
+                'estado_id' => $incidencia->estado_id,
+                'usuario_id' => auth()->id(),
+                'observacion' => "Estado cambiado de {$estadoAnterior->nombre} a {$estadoNuevo->nombre}.",
+            ]);
+
+        }
 
         return redirect()
             ->route('incidencias.show', $incidencia->id)
             ->with('success', 'Incidencia actualizada correctamente.');
-
-            return redirect()
-                ->route('incidencias.index')
-                ->with('success', 'Incidencia actualizada correctamente.');
-    }
+            }
+    
     /**
      * Remove the specified resource from storage.
      */

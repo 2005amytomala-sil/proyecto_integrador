@@ -102,7 +102,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     provinciaSelect.addEventListener('change', cargarCiudades);
-    
     if (paisSeleccionado) {
 
         await cargarProvincias();
