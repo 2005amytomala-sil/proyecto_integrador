@@ -119,6 +119,26 @@
                                 @endforeach
                             </select>
                         </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Estado</label>
+
+                            <select name="estado_id" class="form-select" required>
+
+                                @foreach($estados as $estado)
+
+                                    <option
+                                        value="{{ $estado->id }}"
+                                        {{ old('estado_id', $incidencia->estado_id) == $estado->id ? 'selected' : '' }}>
+
+                                        {{ $estado->nombre }}
+
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label">Ciudadano reportante</label>
