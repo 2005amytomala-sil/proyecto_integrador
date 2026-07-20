@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $usuario = auth()->user();
+    $rol = $usuario->rol->nombre;
+@endphp
+
 <div class="container-fluid">
 
     <div class="mb-3 d-flex align-items-center gap-3">
@@ -17,12 +22,29 @@
         </div>
 
         <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('incidencias.edit', $incidencia->id) }}"
-            class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-pencil-square me-1"></i>
-                Editar Incidencia
-            </a>
+            @if(
+                in_array($rol, ['Administrador', 'Operador']) ||
+                ($rol === 'Ciudadano' && $usuario->id == $incidencia->ciudadano_id)
+            )
+                <a href="{{ route('incidencias.edit', $incidencia->id) }}"
+                class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Editar Incidencia
+                </a>
+            @endif
 
+            @if(
+                in_array($rol, ['Administrador', 'Operador']) ||
+                (
+                    $rol === 'Ciudadano' &&
+                    $usuario->id == $incidencia->ciudadano_id &&
+                    in_array($incidencia->estado->nombre, [
+                        'Registrada',
+                        'Rechazada',
+                        'Cancelada'
+                    ])
+                )
+            )
             <form action="{{ route('incidencias.destroy', $incidencia->id) }}"
                 method="POST"
                 onsubmit="return confirm('¿Está seguro de eliminar esta incidencia? Esta acción no se puede deshacer.');">
@@ -34,6 +56,8 @@
                     Eliminar
                 </button>
             </form>
+            @endif
+
         </div>
     </div>
 
