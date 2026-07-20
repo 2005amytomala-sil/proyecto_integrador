@@ -44,9 +44,18 @@ class IncidenciaController extends Controller
         $subtipos = SubtipoIncidencia::orderBy('nombre')->get();
         $prioridades = Prioridad::orderBy('nombre')->get();
 
-        $ciudadanos = User::whereHas('rol', function ($query) {
-            $query->where('nombre', 'Ciudadano');
-        })->orderBy('nombres')->get();
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        $ciudadanos = collect();
+
+        if (in_array($rol, ['Administrador', 'Operador'])) {
+
+            $ciudadanos = User::whereHas('rol', function ($query) {
+                $query->where('nombre', 'Ciudadano');
+            })->orderBy('nombres')->get();
+
+        }
 
         return view('incidencias.create', compact(
             'ciudades',
@@ -74,6 +83,13 @@ class IncidenciaController extends Controller
             'evidencia' => 'nullable|array',
             'evidencia.*' => 'image|mimes:jpg,jpeg,png|max:5120',
         ]);
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        if ($rol === 'Ciudadano') {
+
+            $validated['ciudadano_id'] = $usuario->id;
+        }
 
         // Buscar el estado inicial
         $estadoRegistrada = Estado::where('nombre', 'Registrada')->first();
@@ -155,6 +171,21 @@ class IncidenciaController extends Controller
      */
     public function edit(Incidencia $incidencia)
     {
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        if ($rol === 'Ciudadano') {
+
+            if ($incidencia->ciudadano_id != $usuario->id) {
+                abort(403, 'No tiene permiso para editar esta incidencia.');
+            }
+
+            if ($incidencia->estado->nombre !== 'Registrada') {
+                abort(403, 'Esta incidencia ya no puede ser modificada.');
+            }
+
+        }
+
         $ciudades = Ciudad::orderBy('nombre')->get();
         $tipos = TipoIncidencia::orderBy('nombre')->get();
         $subtipos = SubtipoIncidencia::orderBy('nombre')->get();
@@ -180,8 +211,31 @@ class IncidenciaController extends Controller
      */
     public function update(Request $request, Incidencia $incidencia)
     {
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        if ($rol === 'Ciudadano') {
+
+            if ($incidencia->ciudadano_id != $usuario->id) {
+                abort(403, 'No tiene permiso para modificar esta incidencia.');
+            }
+
+            if ($incidencia->estado->nombre !== 'Registrada') {
+                abort(403, 'Esta incidencia ya no puede ser modificada.');
+            }
+        }
+        if ($rol === 'Ciudadano') {
+
+            $request->merge([
+                'estado_id' => $incidencia->estado_id,
+                'prioridad_id' => $incidencia->prioridad_id,
+                'ciudadano_id' => $incidencia->ciudadano_id,
+            ]);
+
+        }
+
         $validated = $request->validate([
-            'ciudadano_id' => 'required|exists:users,id',
+            'ciudadano_id' => 'nullable|exists:users,id',
             'ciudad_id' => 'required|exists:ciudades,id',
             'tipo_incidencia_id' => 'required|exists:tipos_incidencia,id',
             'subtipo_incidencia_id' => 'required|exists:subtipos_incidencia,id',
@@ -235,9 +289,6 @@ class IncidenciaController extends Controller
             ->route('incidencias.show', $incidencia->id)
             ->with('success', 'Incidencia actualizada correctamente.');
 
-            return redirect()
-                ->route('incidencias.index')
-                ->with('success', 'Incidencia actualizada correctamente.');
     }
 
 
@@ -246,6 +297,24 @@ class IncidenciaController extends Controller
      */
     public function destroy(Incidencia $incidencia)
     {
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        if ($rol === 'Ciudadano') {
+
+            if ($incidencia->ciudadano_id != $usuario->id) {
+                abort(403, 'No tiene permiso para eliminar esta incidencia.');
+            }
+
+            if (!in_array($incidencia->estado->nombre, [
+                'Registrada',
+                'Rechazada',
+                'Cancelada'
+            ])) {
+                abort(403, 'Esta incidencia ya no puede eliminarse.');
+            }
+        }
+
         foreach ($incidencia->evidencias as $evidencia) {
         if (
             $evidencia->archivo &&

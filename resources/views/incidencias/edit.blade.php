@@ -19,6 +19,12 @@
 
     <form id="incidenciaForm" action="{{ route('incidencias.update', $incidencia->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
+
+        @php
+            $usuario = auth()->user();
+            $rol = $usuario->rol->nombre;
+        @endphp
+
         @method('PUT')
 
         <div class="row">
@@ -109,17 +115,40 @@
                         <h6 class="mb-3">Configuración</h6>
 
                         <div class="mb-3">
-                            <label class="form-label">Prioridad</label>
-                            <select name="prioridad_id" class="form-select" required>
-                                <option value="">Seleccione...</option>
-                                @foreach($prioridades as $prioridad)
-                                    <option value="{{ $prioridad->id }}" {{ old('prioridad_id', $incidencia->prioridad_id) == $prioridad->id ? 'selected' : '' }}>
-                                        {{ $prioridad->nombre }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                                <label class="form-label">Prioridad</label>
+
+                                @if($rol === 'Ciudadano')
+
+                                    <input type="hidden"
+                                        name="prioridad_id"
+                                        value="{{ $incidencia->prioridad_id }}">
+
+                                    <input type="text"
+                                        class="form-control"
+                                        value="{{ $incidencia->prioridad->nombre }}"
+                                        disabled>
+
+                                @else
+
+                                    <select name="prioridad_id" class="form-select" required>
+
+                                        @foreach($prioridades as $prioridad)
+                                            <option value="{{ $prioridad->id }}"
+                                                {{ old('prioridad_id', $incidencia->prioridad_id) == $prioridad->id ? 'selected' : '' }}>
+                                                {{ $prioridad->nombre }}
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+
+                                @endif
+
+                                @error('prioridad_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
                         
+                        @if(in_array($rol, ['Administrador', 'Operador']))
                         <div class="mb-3">
                             <label class="form-label">Estado</label>
 
@@ -139,17 +168,40 @@
 
                             </select>
                         </div>
-
+                        @endif
+                        
                         <div class="mb-3">
-                            <label class="form-label">Ciudadano reportante</label>
-                            <select name="ciudadano_id" class="form-select" required>
-                                <option value="">Seleccione...</option>
-                                @foreach($ciudadanos as $ciudadano)
-                                    <option value="{{ $ciudadano->id }}" {{ old('ciudadano_id', $incidencia->ciudadano_id) == $ciudadano->id ? 'selected' : '' }}>
-                                        {{ $ciudadano->nombres }} {{ $ciudadano->apellidos }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Ciudadano Reportante</label>
+
+                            @if($rol === 'Ciudadano')
+
+                                <input type="hidden"
+                                    name="ciudadano_id"
+                                    value="{{ $incidencia->ciudadano_id }}">
+
+                                <input type="text"
+                                    class="form-control"
+                                    value="{{ $incidencia->ciudadano->nombres }} {{ $incidencia->ciudadano->apellidos }}"
+                                    disabled>
+
+                            @else
+
+                                <select name="ciudadano_id" class="form-select" required>
+
+                                    @foreach($ciudadanos as $ciudadano)
+                                        <option value="{{ $ciudadano->id }}"
+                                            {{ old('ciudadano_id', $incidencia->ciudadano_id) == $ciudadano->id ? 'selected' : '' }}>
+                                            {{ $ciudadano->nombres }} {{ $ciudadano->apellidos }}
+                                        </option>
+                                    @endforeach
+
+                                </select>
+
+                            @endif
+
+                            @error('ciudadano_id')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                     </div>
                 </div>
