@@ -130,7 +130,7 @@
             <div class="card dashboard-card mb-3">
                 <div class="card-body">
                     <h5 class="mb-3">Ubicación en Mapa</h5>
-                    <div id="incidencia-map" style="height:220px; border-radius:8px; background:#f5f7fa; display:flex;align-items:center;justify-content:center; color:#9aa3ad;">Mapa (pendiente)</div>
+                    <div id="map" style="height:300px; border-radius:8px;"></div>
                 </div>
             </div>
 
@@ -272,4 +272,17 @@
     </div>
 </div>
 
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        MapaIncidencias.crearSoloLectura(
+            'map',
+            {{ $incidencia->latitud ?? '-2.170998' }},
+            {{ $incidencia->longitud ?? '-79.922359' }}
+        );
+
+    });
+</script>
+@endpush
 @endsection
