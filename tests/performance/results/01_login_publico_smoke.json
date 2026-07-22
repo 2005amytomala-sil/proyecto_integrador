@@ -1,0 +1,150 @@
+{
+    "metrics": {
+        "iterations": {
+            "count": 6,
+            "rate": 0.521288800372506
+        },
+        "http_req_sending": {
+            "p(95)": 0.565125,
+            "avg": 0.18685,
+            "min": 0,
+            "med": 0,
+            "max": 0.5697,
+            "p(90)": 0.56055
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 880.91995,
+            "min": 719.1966,
+            "med": 770.2896499999999,
+            "max": 1184.633,
+            "p(90)": 1145.226,
+            "p(95)": 1164.9295
+        },
+        "http_reqs": {
+            "count": 6,
+            "rate": 0.521288800372506
+        },
+        "data_received": {
+            "count": 25110,
+            "rate": 2181.5936295589377
+        },
+        "vus_max": {
+            "max": 1,
+            "value": 1,
+            "min": 1
+        },
+        "http_req_waiting": {
+            "avg": 875.0698666666667,
+            "min": 714.1924,
+            "med": 764.0569,
+            "max": 1178.6097,
+            "p(90)": 1139.383,
+            "p(95)": 1158.99635
+        },
+        "checks": {
+            "fails": 0,
+            "passes": 18,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "vus": {
+            "max": 1,
+            "value": 1,
+            "min": 1
+        },
+        "http_req_connecting": {
+            "min": 0.9709,
+            "med": 1.28735,
+            "max": 2.5857,
+            "p(90)": 2.1512000000000002,
+            "p(95)": 2.36845,
+            "avg": 1.48485
+        },
+        "http_req_duration": {
+            "p(95)": 1164.9295,
+            "avg": 880.91995,
+            "min": 719.1966,
+            "med": 770.2896499999999,
+            "max": 1184.633,
+            "p(90)": 1145.226,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "http_req_receiving": {
+            "p(95)": 6.238725,
+            "avg": 5.663233333333333,
+            "min": 5.0042,
+            "med": 5.708349999999999,
+            "max": 6.2447,
+            "p(90)": 6.232749999999999
+        },
+        "http_req_blocked": {
+            "p(95)": 2.7532,
+            "avg": 1.6653,
+            "min": 1.0611,
+            "med": 1.4689999999999999,
+            "max": 3.0987,
+            "p(90)": 2.4077
+        },
+        "iteration_duration": {
+            "max": 2399.8519,
+            "p(90)": 2253.7727,
+            "p(95)": 2326.8123,
+            "avg": 1918.2368999999999,
+            "min": 1720.7683,
+            "med": 1772.2982000000002
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "data_sent": {
+            "count": 450,
+            "rate": 39.09666002793796
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 6,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "la respuesta devuelve HTTP 200": {
+                    "id": "8420e5dd729842c6c3e3955c6612f6ee",
+                    "passes": 6,
+                    "fails": 0,
+                    "name": "la respuesta devuelve HTTP 200",
+                    "path": "::la respuesta devuelve HTTP 200"
+                },
+                "la página contiene un formulario": {
+                    "name": "la página contiene un formulario",
+                    "path": "::la página contiene un formulario",
+                    "id": "8a08377f7639894ddc9cb4b30e8edfe2",
+                    "passes": 6,
+                    "fails": 0
+                },
+                "la página contiene un campo de contraseña": {
+                    "id": "0126b06385dc2edb66aaa1ed48ea9056",
+                    "passes": 6,
+                    "fails": 0,
+                    "name": "la página contiene un campo de contraseña",
+                    "path": "::la página contiene un campo de contraseña"
+                }
+            }
+    }
+}
