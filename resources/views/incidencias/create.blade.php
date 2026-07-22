@@ -101,7 +101,7 @@
 
                             <div class="col-md-4">
                                 <label class="form-label">Latitud</label>
-                                <input type="text" name="latitud" class="form-control" value="{{ old('latitud') }}">
+                                <input type="text" id="latitud" name="latitud" class="form-control" value="{{ old('latitud') }}">
                                 @error('latitud')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -109,7 +109,7 @@
 
                             <div class="col-md-4">
                                 <label class="form-label">Longitud</label>
-                                <input type="text" name="longitud" class="form-control" value="{{ old('longitud') }}">
+                                <input type="text" id="longitud" name="longitud" class="form-control" value="{{ old('longitud') }}">
                                 @error('longitud')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -117,11 +117,12 @@
                         </div>
 
                         <div class="mt-4">
-                            <label class="form-label">Mapa</label>
-                            <div class="border rounded-3 bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
-                                <span class="text-muted">Espacio reservado para mapa</span>
+                            <label class="form-label">Seleccione la ubicación</label>
+                            <div
+                                id="map" class="border rounded-3" style="height:400px;">
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -275,6 +276,19 @@
             }
         });
     });
+</script>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        MapaIncidencias.crearEditable(
+            'map',
+            'latitud',
+            'longitud'
+        );
+
+    });
+
 </script>
 @endpush
 @endsection
