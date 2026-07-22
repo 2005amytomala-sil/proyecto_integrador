@@ -14,7 +14,7 @@
 
     <div class="dropdown">
         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
-            Admin
+            {{ auth()->user()->nombres }}
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="#">Perfil</a></li>
