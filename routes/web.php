@@ -31,6 +31,12 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard.index');
     })->name('dashboard');
 
+    Route::get('/my_incidents',function(){
+        return view('incidencias.mis-incidencias');
+    })->name('incidencias.mias');
+
+    Route::get('/api/mis-incidencias', [IncidenciaController::class, 'apiMisIncidencias']);
+    
     Route::resource('incidencias', IncidenciaController::class);
 
     Route::resource('roles', RolController::class);

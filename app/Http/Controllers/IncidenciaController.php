@@ -12,6 +12,7 @@ use App\Models\Prioridad;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use App\Models\HistorialEstado;
+use Auth;
 use Illuminate\Support\Facades\DB;
 
 class IncidenciaController extends Controller
@@ -345,5 +346,21 @@ class IncidenciaController extends Controller
         ])->orderBy('id')->get();
 
         return response()->json($incidencias);
+    }
+    
+    public function apiMisIncidencias()
+    {
+        $misIncidencias = Incidencia::with([
+            'estado',
+            'prioridad',
+            'tipoIncidencia',
+            'subtipoIncidencia',
+            'ciudad'
+        ])
+        ->where('ciudadano_id', Auth::id())
+        ->latest()
+        ->get();
+        
+        return response()->json($misIncidencias);
     }
 }
