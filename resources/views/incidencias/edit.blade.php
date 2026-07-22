@@ -90,20 +90,18 @@
 
                             <div class="col-md-4">
                                 <label class="form-label">Latitud</label>
-                                <input type="text" name="latitud" class="form-control" value="{{ old('latitud', $incidencia->latitud) }}">
+                                <input type="text" id="latitud" name="latitud" class="form-control" value="{{ old('latitud', $incidencia->latitud) }}" readonly>
                             </div>
 
                             <div class="col-md-4">
                                 <label class="form-label">Longitud</label>
-                                <input type="text" name="longitud" class="form-control" value="{{ old('longitud', $incidencia->longitud) }}">
+                                <input type="text" id="longitud" name="longitud" class="form-control" value="{{ old('longitud', $incidencia->longitud) }}" readonly>
                             </div>
                         </div>
 
                         <div class="mt-4">
                             <label class="form-label">Mapa</label>
-                            <div class="border rounded-3 bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
-                                <span class="text-muted">Espacio reservado para mapa</span>
-                            </div>
+                            <div id="map" style="height:300px; border-radius:8px;"></div>
                         </div>
                     </div>
                 </div>
@@ -365,6 +363,17 @@
                 updatePreview(input.files);
             }
         });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        MapaIncidencias.crearEditable(
+            'map',
+            'latitud',
+            'longitud'
+        );
+
     });
 </script>
 @endpush

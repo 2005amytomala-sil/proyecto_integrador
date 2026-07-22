@@ -10,6 +10,7 @@
         'resources/css/app.css',
         'resources/js/app.js'
     ])
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 </head>
 <body>
     @include('components.sidebar')
@@ -21,6 +22,8 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     @stack('scripts')
 </body>
 </html>
