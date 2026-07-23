@@ -19,7 +19,7 @@
         <i class="bi bi-geo-alt"></i> Ubicaciones
     </a>
 
-    <a class="nav-link" href="#">
+    <a class="nav-link {{ request()->routeIs('notificaciones.*') ? 'active' : '' }}" href="{{ route('notificaciones.index') }}">
         <i class="bi bi-bell"></i> Notificaciones
     </a>
 </nav>
