@@ -64,6 +64,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/api/notificaciones', [NotificacionController::class, 'apiIndex']);
     Route::get('/api/notificaciones/unread-count', [NotificacionController::class, 'unreadCount']);
+
+    Route::get('/perfil', [UserController::class, 'miPerfil'])->name('perfil.mio');
+    Route::get('/perfil/{user}', [UserController::class, 'show'])->name('perfil.show');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

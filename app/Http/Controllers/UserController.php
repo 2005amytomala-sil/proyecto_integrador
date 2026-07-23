@@ -62,9 +62,29 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        $user->load(['rol', 'ciudad.provincia']);
+
+        $totalIncidencias = $user->incidencias()->count();
+        
+        $incidenciasEsteMes = $user->incidencias()
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->count();
+
+        $ultimasIncidencias = $user->incidencias()
+            ->with(['estado', 'prioridad'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('users.profile', compact(
+            'user', 
+            'totalIncidencias', 
+            'incidenciasEsteMes', 
+            'ultimasIncidencias'
+        ));
     }
 
     /**
@@ -132,5 +152,9 @@ class UserController extends Controller
         return redirect()
             ->route('users.index')
             ->with('success', $mensaje);
+    }
+    public function miPerfil()
+    {
+        return $this->show(auth()->user());
     }
 }
