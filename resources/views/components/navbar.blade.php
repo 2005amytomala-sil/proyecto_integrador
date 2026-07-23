@@ -23,7 +23,7 @@
             {{ auth()->user()->nombres }}
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li><a class="dropdown-item" href="{{ route('perfil.mio')}}"><i class="bi bi-person me-2"></i>Perfil</a></li>
             <li><a class="dropdown-item" href="#">Configuración</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>

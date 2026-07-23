@@ -57,23 +57,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Clases de color para los estados y prioridades
     function getEstadoBadgeClass(nombre) {
         switch ((nombre || '').trim().toLowerCase()) {
-            case 'registrada': return 'bg-primary';
-            case 'en proceso': return 'bg-warning text-dark';
-            case 'resuelta': return 'bg-success';
-            case 'cerrada': return 'bg-dark';
-            default: return 'bg-secondary';
+            case 'registrada': 
+                return 'bg-primary';
+            case 'en proceso': 
+                return 'bg-warning text-dark';
+            case 'validada': 
+            case 'rechazada': 
+            case 'cancelada': 
+                return 'bg-info text-dark';
+            case 'resuelta': 
+                return 'bg-success';
+            case 'cerrada': 
+                return 'bg-dark';
+            default: 
+                return 'bg-secondary';
         }
     }
 
     function getPrioridadBadgeClass(nombre) {
         switch ((nombre || '').trim().toLowerCase()) {
-            case 'baja': return 'bg-success';
-            case 'media': return 'bg-warning text-dark';
-            case 'alta': return 'bg-danger';
-            default: return 'bg-secondary';
+            case 'baja': 
+                return 'bg-success';
+            case 'media': 
+                return 'bg-warning text-dark';
+            case 'alta': 
+                return 'bg-danger';
+            default: 
+                return 'bg-secondary';
         }
     }
 
