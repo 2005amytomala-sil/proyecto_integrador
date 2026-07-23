@@ -59,9 +59,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('evidencias', EvidenciaController::class);
 
-    Route::resource('notificaciones', NotificacionController::class);
-    
+    Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones.index');
+    Route::get('/notificaciones/{notificacion}/ver', [NotificacionController::class, 'marcarYVer'])->name('notificaciones.ver');
 
+    Route::get('/api/notificaciones', [NotificacionController::class, 'apiIndex']);
+    Route::get('/api/notificaciones/unread-count', [NotificacionController::class, 'unreadCount']);
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

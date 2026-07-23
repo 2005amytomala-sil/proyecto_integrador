@@ -8,9 +8,15 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 
-    <button type="button" class="btn btn-primary me-3">
-        Notifications <span class="badge text-bg-secondary">4</span>
-    </button>
+    <a href="{{ route('notificaciones.index') }}" 
+       class="btn btn-light me-3 position-relative p-2" 
+       title="Notificaciones">
+        <i class="bi bi-bell fs-5"></i>
+        <span id="notif-badge" 
+              class="position-absolute top-0 start-100 translate-middle bg-danger border border-light rounded-circle d-none" 
+              style="width: 10px; height: 10px; padding: 0;">
+        </span>
+    </a>
 
     <div class="dropdown">
         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
