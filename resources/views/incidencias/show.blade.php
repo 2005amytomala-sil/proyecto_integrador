@@ -193,6 +193,7 @@
                         $a = optional($incidencia->ciudadano)->apellidos ?? '';
                         $initials = strtoupper(substr($n,0,1) . substr($a,0,1));
                         if(trim($initials) == '') { $initials = strtoupper(substr($n.$a,0,1) ?: 'U'); }
+                        $ciudadanoId = optional($incidencia->ciudadano)->id;
                     @endphp
 
                     <div class="d-flex align-items-center mt-2">
@@ -202,6 +203,13 @@
                             <div class="report-role small">Ciudadano</div>
                         </div>
                     </div>
+                    @if($ciudadanoId)
+                        <div class="d-flex justify-content-end mt-3">
+                            <a href="{{ route('perfil.show', $ciudadanoId) }}" class="btn btn-sm btn-outline-primary" title="Ver perfil público">
+                                <i class="bi bi-eye me-1"></i> Ver perfil
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
 

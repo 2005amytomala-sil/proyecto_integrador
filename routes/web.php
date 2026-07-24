@@ -31,6 +31,12 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard.index');
     })->name('dashboard');
 
+    Route::get('/my_incidents',function(){
+        return view('incidencias.mis-incidencias');
+    })->name('incidencias.mias');
+
+    Route::get('/api/mis-incidencias', [IncidenciaController::class, 'apiMisIncidencias']);
+    
     Route::resource('incidencias', IncidenciaController::class);
 
     Route::resource('roles', RolController::class);
@@ -53,9 +59,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('evidencias', EvidenciaController::class);
 
-    Route::resource('notificaciones', NotificacionController::class);
-    
+    Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones.index');
+    Route::get('/notificaciones/{notificacion}/ver', [NotificacionController::class, 'marcarYVer'])->name('notificaciones.ver');
 
+    Route::get('/api/notificaciones', [NotificacionController::class, 'apiIndex']);
+    Route::get('/api/notificaciones/unread-count', [NotificacionController::class, 'unreadCount']);
+
+    Route::get('/perfil', [UserController::class, 'miPerfil'])->name('perfil.mio');
+    Route::get('/perfil/{user}', [UserController::class, 'show'])->name('perfil.show');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

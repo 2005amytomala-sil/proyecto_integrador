@@ -3,7 +3,7 @@
         <i class="bi bi-grid"></i> Panel de Control
     </a>
 
-    <a class="nav-link {{ request()->routeIs('incidencias.*') ? 'active' : '' }}" href="{{ route('incidencias.index') }}">
+    <a class="nav-link {{ request()->routeIs('incidencias.index') ? 'active' : '' }}" href="{{ route('incidencias.index') }}">
         <i class="bi bi-tools"></i>Mis Incidencias
     </a>
 

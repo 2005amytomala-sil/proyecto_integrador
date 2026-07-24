@@ -12,6 +12,8 @@ use App\Models\Prioridad;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use App\Models\HistorialEstado;
+use App\Models\Notificacion;
+use Auth;
 use Illuminate\Support\Facades\DB;
 
 class IncidenciaController extends Controller
@@ -135,6 +137,19 @@ class IncidenciaController extends Controller
             'observacion' => 'Incidencia registrada en el sistema.',
         ]);
 
+        $destinatarios = User::whereHas('rol', function ($query) {
+                $query->whereIn('nombre', ['Administrador', 'Operador']);
+            })->get();
+
+            foreach ($destinatarios as $user) {
+                Notificacion::create([
+                    'usuario_id'    => $user->id,
+                    'incidencia_id' => $incidencia->id,
+                    'titulo'        => 'Nueva incidencia registrada',
+                    'mensaje'       => "Se registró la incidencia #{$incidencia->id}: {$incidencia->titulo}",
+                    'leida'         => false
+                ]);
+            }
     });
 
     return redirect()
@@ -282,6 +297,16 @@ class IncidenciaController extends Controller
                 'usuario_id' => auth()->id(),
                 'observacion' => "Estado cambiado de {$estadoAnterior->nombre} a {$estadoNuevo->nombre}.",
             ]);
+            
+            if ($incidencia->ciudadano_id) {
+                Notificacion::create([
+                    'usuario_id'    => $incidencia->ciudadano_id,
+                    'incidencia_id' => $incidencia->id,
+                    'titulo'        => 'Estado de incidencia actualizado',
+                    'mensaje'       => "Tu incidencia #{$incidencia->id} ha cambiado al estado: {$estadoNuevo->nombre}",
+                    'leida'         => false
+                ]);
+            }
 
         }
 
@@ -345,5 +370,21 @@ class IncidenciaController extends Controller
         ])->orderBy('id')->get();
 
         return response()->json($incidencias);
+    }
+    
+    public function apiMisIncidencias()
+    {
+        $misIncidencias = Incidencia::with([
+            'estado',
+            'prioridad',
+            'tipoIncidencia',
+            'subtipoIncidencia',
+            'ciudad'
+        ])
+        ->where('ciudadano_id', Auth::id())
+        ->latest()
+        ->get();
+        
+        return response()->json($misIncidencias);
     }
 }
