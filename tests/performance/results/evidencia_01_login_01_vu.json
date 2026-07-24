@@ -1,0 +1,150 @@
+{
+    "metrics": {
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_sending": {
+            "p(95)": 0.032045000000000455,
+            "avg": 0.032045000000000004,
+            "min": 0,
+            "med": 0,
+            "max": 0.6409,
+            "p(90)": 0
+        },
+        "data_sent": {
+            "rate": 54.815694158865426,
+            "count": 1700
+        },
+        "data_received": {
+            "count": 85420,
+            "rate": 2754.3274088531084
+        },
+        "vus_max": {
+            "value": 1,
+            "min": 1,
+            "max": 1
+        },
+        "iteration_duration": {
+            "avg": 1550.600085,
+            "min": 1343.1339,
+            "med": 1380.27245,
+            "max": 4000.2997,
+            "p(90)": 1584.09875,
+            "p(95)": 1734.7179450000017
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 1
+        },
+        "checks": {
+            "fails": 0,
+            "passes": 60,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "iterations": {
+            "count": 20,
+            "rate": 0.6448905195160638
+        },
+        "http_req_duration": {
+            "med": 378.73220000000003,
+            "max": 2396.765,
+            "p(90)": 577.28051,
+            "p(95)": 703.4380700000013,
+            "avg": 517.722515,
+            "min": 342.0065,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "http_req_blocked": {
+            "avg": 1.624985,
+            "min": 0,
+            "med": 0,
+            "max": 32.4997,
+            "p(90)": 0,
+            "p(95)": 1.624985000000023
+        },
+        "http_req_connecting": {
+            "avg": 0.17531000000000002,
+            "min": 0,
+            "med": 0,
+            "max": 3.5062,
+            "p(90)": 0,
+            "p(95)": 0.1753100000000025
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 378.73220000000003,
+            "max": 2396.765,
+            "p(90)": 577.28051,
+            "p(95)": 703.4380700000013,
+            "avg": 517.722515,
+            "min": 342.0065
+        },
+        "http_req_receiving": {
+            "med": 3.7342500000000003,
+            "max": 76.2974,
+            "p(90)": 4.574800000000002,
+            "p(95)": 9.73584000000005,
+            "avg": 7.128780000000001,
+            "min": 2.1074
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 20,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_waiting": {
+            "max": 2319.8267,
+            "p(90)": 571.26061,
+            "p(95)": 695.6908350000012,
+            "avg": 510.5616900000001,
+            "min": 339.3955,
+            "med": 376.17215
+        },
+        "http_reqs": {
+            "count": 20,
+            "rate": 0.6448905195160638
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "respuesta HTTP 200": {
+                    "name": "respuesta HTTP 200",
+                    "path": "::respuesta HTTP 200",
+                    "id": "6af03fcca1ce0610a4f24efd5eee2065",
+                    "passes": 20,
+                    "fails": 0
+                },
+                "pagina contiene formulario": {
+                    "name": "pagina contiene formulario",
+                    "path": "::pagina contiene formulario",
+                    "id": "e3703e2bedbe488010f04dc2e2845ad1",
+                    "passes": 20,
+                    "fails": 0
+                },
+                "pagina contiene campo password": {
+                    "name": "pagina contiene campo password",
+                    "path": "::pagina contiene campo password",
+                    "id": "ef65f68276b00cc206c38f0b972ba5ed",
+                    "passes": 20,
+                    "fails": 0
+                }
+            }
+    }
+}
