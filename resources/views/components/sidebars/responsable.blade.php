@@ -18,4 +18,15 @@
     <a class="nav-link" href="#">
         <i class="bi bi-bell"></i> Notificaciones
     </a>
+
+    @if(auth()->user()->rol->nombre == 'Responsable')
+    <li class="nav-item">
+        <a class="nav-link"
+        href="{{ route('asignaciones.mias') }}">
+
+            Mis asignaciones
+        </a>
+    </li>
+    @endif
+
 </nav>

@@ -169,18 +169,50 @@
         <div class="col-lg-4">
             <div class="card dashboard-card mb-3">
                 <div class="card-body">
-                    <h6 class="mb-3">Estado Actual</h6>
+                    @php
+                        $usuario = auth()->user();
+                        $rol = $usuario->rol->nombre;
+                    @endphp
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-3">Estado Actual</h6>
+                            @if(optional($incidencia->estado)->nombre)
+                                <span class="badge bg-info text-dark">
+                                    {{ $incidencia->estado->nombre }}
+                                </span>
+                            @else
+                                <span class="text-muted">Sin estado</span>
+                            @endif
+                        </div>
 
-                    <div class="mb-3">
-                        @if(optional($incidencia->estado)->nombre)
-                            <span class="badge bg-info text-dark">
-                                {{ $incidencia->estado->nombre }}
-                            </span>
-                        @else
-                            <span class="text-muted">Sin estado</span>
+                        @if(
+                            in_array($rol, ['Administrador', 'Operador']) &&
+                            $incidencia->estado->nombre === 'Registrada'
+                        )
+                            <div class="d-flex flex-column gap-2">
+
+                                <form action="{{ route('incidencias.validar', $incidencia) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button class="btn btn-success btn-sm w-100">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Validar
+                                    </button>
+                                </form>
+                                <form action="{{ route('incidencias.rechazar', $incidencia) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button class="btn btn-danger btn-sm w-100">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Rechazar
+                                    </button>
+                                </form>
+
+                            </div>
                         @endif
                     </div>
-
                 </div>
             </div>
 
