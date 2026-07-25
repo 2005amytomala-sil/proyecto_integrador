@@ -51,8 +51,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('prioridades', PrioridadController::class);
 
-    Route::resource('asignaciones', AsignacionController::class);
-
     Route::resource('historial-estados', HistorialEstadoController::class);
 
     Route::resource('comentarios', ComentarioController::class);
@@ -67,10 +65,34 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/perfil', [UserController::class, 'miPerfil'])->name('perfil.mio');
     Route::get('/perfil/{user}', [UserController::class, 'show'])->name('perfil.show');
+
+    Route::patch('/incidencias/{incidencia}/validar', [IncidenciaController::class, 'validar'])
+    ->name('incidencias.validar');
+
+    Route::patch('/incidencias/{incidencia}/rechazar', [IncidenciaController::class, 'rechazar'])
+    ->name('incidencias.rechazar');
+
+    Route::get('/mis-asignaciones', [AsignacionController::class, 'misAsignaciones'])
+    ->name('asignaciones.mias');
+
+    Route::get('/mis-asignaciones/{id}', [AsignacionController::class, 'showResponsable'])
+        ->name('asignaciones.mias.show');
+    
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::resource('users', UserController::class);
 
+    Route::get('/asignaciones', [AsignacionController::class, 'index'])
+    ->name('asignaciones.index');
+
+    Route::get('/asignaciones/{incidencia}', [AsignacionController::class, 'show'])
+    ->name('asignaciones.show');
+    
+    Route::post('/asignaciones/{incidencia}', [AsignacionController::class, 'store'])
+    ->name('asignaciones.store');
+
+
 });
+

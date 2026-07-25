@@ -67,6 +67,20 @@ class Incidencia extends Model
         return $this->hasMany(Asignacion::class);
     }
 
+    public function responsablePrincipal()
+    {
+        return $this->hasOne(Asignacion::class)
+            ->where('tipo_asignacion', 'responsable')
+            ->where('activo', true);
+    }
+
+    public function apoyos()
+    {
+        return $this->hasMany(Asignacion::class)
+            ->where('tipo_asignacion', 'apoyo')
+            ->where('activo', true);
+    }
+
     public function historialEstados()
     {
         return $this->hasMany(HistorialEstado::class)
