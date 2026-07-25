@@ -216,6 +216,8 @@ class AsignacionController extends Controller
             'responsablePrincipal.usuario',
             'responsablePrincipal.operador',
             'apoyos.usuario',
+            'evidenciasAntes',
+            'evidenciasDespues',
         ])->findOrFail($id);
 
         // Verificar que el responsable tenga asignada esta incidencia

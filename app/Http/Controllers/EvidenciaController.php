@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Evidencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Incidencia;
 
 class EvidenciaController extends Controller
 {
@@ -27,9 +28,39 @@ class EvidenciaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+        $request->validate([
+            'archivo' => ['required', 'image', 'max:4096'],
+            'tipo' => ['required', 'in:antes,despues'],
+            'descripcion' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $incidencia = Incidencia::with('asignaciones')->findOrFail($id);
+
+        // Verificar que el usuario tenga asignada la incidencia
+        if (!$incidencia->asignaciones()
+            ->where('usuario_id', auth()->id())
+            ->where('activo', true)
+            ->exists()) {
+
+            abort(403);
+        }
+
+        $ruta = $request->file('archivo')->store(
+            'evidencias',
+            'public'
+        );
+
+        Evidencia::create([
+            'incidencia_id' => $incidencia->id,
+            'usuario_id' => auth()->id(),
+            'archivo' => $ruta,
+            'tipo' => $request->tipo,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        return back()->with('success', 'Evidencia subida correctamente.');
     }
 
     /**

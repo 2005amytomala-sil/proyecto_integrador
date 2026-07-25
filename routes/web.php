@@ -55,8 +55,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('comentarios', ComentarioController::class);
 
-    Route::resource('evidencias', EvidenciaController::class);
-
     Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones.index');
     Route::get('/notificaciones/{notificacion}/ver', [NotificacionController::class, 'marcarYVer'])->name('notificaciones.ver');
 
@@ -77,7 +75,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/mis-asignaciones/{id}', [AsignacionController::class, 'showResponsable'])
         ->name('asignaciones.mias.show');
+
+    Route::post('/mis-asignaciones/{incidencia}/evidencias', [EvidenciaController::class, 'store'])
+    ->name('evidencias.store');
     
+    Route::patch('/mis-asignaciones/{incidencia}/resolver',[IncidenciaController::class, 'resolver'])
+    ->name('incidencias.resolver');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

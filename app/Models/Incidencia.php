@@ -101,4 +101,16 @@ class Incidencia extends Model
     {
         return $this->hasMany(Notificacion::class);
     }
+
+    public function evidenciasAntes()
+    {
+        return $this->hasMany(Evidencia::class)
+            ->where('tipo', 'antes');
+    }
+
+    public function evidenciasDespues()
+    {
+        return $this->hasMany(Evidencia::class)
+            ->where('tipo', 'despues');
+    }
 }
