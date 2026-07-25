@@ -15,6 +15,7 @@ use App\Models\HistorialEstado;
 use App\Models\Notificacion;
 use Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class IncidenciaController extends Controller
 {
@@ -466,5 +467,38 @@ class IncidenciaController extends Controller
         ->get();
         
         return response()->json($misIncidencias);
+    }
+
+    public function resolver(Incidencia $incidencia)
+    {
+        // Debe estar asignada al usuario autenticado
+        $asignado = $incidencia->asignaciones()
+            ->where('usuario_id', auth()->id())
+            ->where('activo', true)
+            ->exists();
+
+        if (!$asignado) {
+            abort(403);
+        }
+
+        // Debe existir al menos una evidencia "despues"
+        if (!$incidencia->evidencias()->where('tipo', 'despues')->exists()) {
+
+            return back()->withErrors([
+                'resolver' => 'Debe subir al menos una evidencia del resultado antes de resolver la incidencia.'
+            ]);
+
+        }
+
+        $estadoResuelta = Estado::where('nombre', 'Resuelta')->firstOrFail();
+
+        $incidencia->update([
+            'estado_id' => $estadoResuelta->id,
+            'fecha_resolucion' => Carbon::now(),
+        ]);
+
+        return redirect()
+            ->route('asignaciones.mias')
+            ->with('success', 'Incidencia marcada como resuelta.');
     }
 }
