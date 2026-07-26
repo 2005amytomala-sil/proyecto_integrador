@@ -33,3 +33,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 import './ubicacion';
 import './mapa-incidencias';
+import './informe'

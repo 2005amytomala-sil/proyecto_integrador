@@ -15,6 +15,7 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\EvidenciaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InformeController;
 
 Route::get('/', [AuthController::class, 'showLogin']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -67,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/perfil', [UserController::class, 'miPerfil'])->name('perfil.mio');
     Route::get('/perfil/{user}', [UserController::class, 'show'])->name('perfil.show');
+
+    Route::get('/informes', [InformeController::class, 'index'])->name('informes.index');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
