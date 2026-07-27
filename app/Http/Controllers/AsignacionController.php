@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Estado;
 use App\Models\Incidencia;
+use App\Models\HistorialEstado;
 
 class AsignacionController extends Controller
 {
@@ -80,14 +81,21 @@ class AsignacionController extends Controller
 
         $estadoEnProceso = Estado::where('nombre', 'En proceso')->firstOrFail();
 
-        //Impide que haya mas de un responsable principal
+        $responsable = User::findOrFail($request->responsable_id);
+
+        // Impide que haya más de un responsable principal
         if ($incidencia->responsablePrincipal()->exists()) {
             return back()->withErrors([
                 'responsable_id' => 'Esta incidencia ya tiene un responsable asignado.'
             ]);
         }
 
-        DB::transaction(function () use ($request, $incidencia, $estadoEnProceso) {
+        DB::transaction(function () use (
+            $request,
+            $incidencia,
+            $estadoEnProceso,
+            $responsable
+        ) {
 
             // Responsable principal
             Asignacion::create([
@@ -107,6 +115,7 @@ class AsignacionController extends Controller
                     'usuario_id'      => $usuarioId,
                     'operador_id'     => auth()->id(),
                     'tipo_asignacion' => 'apoyo',
+                    'observacion'     => $request->observacion,
                     'activo'          => true,
                 ]);
 
@@ -116,6 +125,18 @@ class AsignacionController extends Controller
             $incidencia->update([
                 'estado_id' => $estadoEnProceso->id,
             ]);
+
+            // Registrar historial
+            logger('Voy a crear historial');
+            HistorialEstado::create([
+                'incidencia_id' => $incidencia->id,
+                'estado_id'     => $estadoEnProceso->id,
+                'usuario_id'    => auth()->id(),
+                'observacion'   => 'Incidencia asignada a ' .
+                                    $responsable->nombres . ' ' .
+                                    $responsable->apellidos . '.',
+            ]);
+            logger('Historial creado');
 
         });
 

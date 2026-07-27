@@ -469,6 +469,7 @@ class IncidenciaController extends Controller
         return response()->json($misIncidencias);
     }
 
+    /*************************************/ 
     public function resolver(Incidencia $incidencia)
     {
 
@@ -504,6 +505,13 @@ class IncidenciaController extends Controller
         $incidencia->update([
             'estado_id' => $estadoResuelta->id,
             'fecha_resolucion' => Carbon::now(),
+        ]);
+        
+        HistorialEstado::create([
+            'incidencia_id' => $incidencia->id,
+            'estado_id'     => $estadoResuelta->id,
+            'usuario_id'    => auth()->id(),
+            'observacion'   => 'Incidencia marcada como resuelta.',
         ]);
 
         return redirect()
