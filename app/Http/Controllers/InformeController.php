@@ -7,9 +7,19 @@ use App\Models\Incidencia;
 use App\Models\Estado;
 use App\Models\Provincia;
 use App\Models\TipoIncidencia;
+use App\Exports\IncidenciasExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Services\InformeService;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InformeController extends Controller
 {
+    private InformeService $informeService;
+    public function __construct(InformeService $informeService)
+    {
+        $this->informeService = $informeService;
+    }
+
     public function index(Request $request)
     {
         $kpis = $this->obtenerKPIs($request);
@@ -36,9 +46,9 @@ class InformeController extends Controller
     {
         // Respeta fecha, provincia y categoría
         // pero ignora estado
-        $incidenciasBase = $this->obtenerIncidenciasFiltradas($request, false);
+        $incidenciasBase = $this->informeService->obtenerIncidenciasFiltradas($request, false);
         // Respeta todos los filtros incluyendo estado
-        $incidencias = $this->obtenerIncidenciasFiltradas($request, true);
+        $incidencias = $this->informeService->obtenerIncidenciasFiltradas($request, true);
         $total = $incidenciasBase->count();
         $estadoSeleccionado = null;
         if($request->filled('estado_id')){
@@ -51,7 +61,7 @@ class InformeController extends Controller
                 return $incidencia->estado->nombre === 'Resuelta';
             })
             ->count();
-        $tituloTiempo = 'Tiempo promedio';
+        $tituloTiempo = 'Tiempo promedio de resolución';
         $tiempoEstado = $this->obtenerTiempoPromedioResolucion(
             $incidenciasBase
         );
@@ -60,19 +70,19 @@ class InformeController extends Controller
                 case 'Registrada':
                     $tituloEstado = 'Registradas';
                     $cantidadEstado = $incidencias->count();
-                    $tituloTiempo = 'Tiempo esperando validación';
+                    $tituloTiempo = 'Tiempo promedio esperando validación';
                     $tiempoEstado = $this->obtenerTiempoEsperaValidacion($incidencias);
                     break;
                 case 'Validada':
                     $tituloEstado = 'Validadas';
                     $cantidadEstado = $incidencias->count();
-                    $tituloTiempo = 'Tiempo esperando atención';
+                    $tituloTiempo = 'Tiempo promedio esperando atención';
                     $tiempoEstado = $this->obtenerTiempoEsperaProceso($incidencias);
                     break;
                 case 'En proceso':
                     $tituloEstado = 'En proceso';
                     $cantidadEstado = $incidencias->count();
-                    $tituloTiempo = 'Tiempo en atención';
+                    $tituloTiempo = 'Tiempo promedio en atención';
                     $tiempoEstado = $this->obtenerTiempoEnProceso($incidencias);
                     break;
                 case 'Resuelta':
@@ -104,8 +114,60 @@ class InformeController extends Controller
             'cantidad_estado' => $cantidadEstado,
             'titulo_tiempo' => $tituloTiempo,
             'tiempo_estado' => $tiempoEstado,
-            'ciudad_lider' => $this->obtenerCiudadLider($incidenciasBase),
+            'ubicacion_lider' => $this->obtenerUbicacionLider(
+                $incidenciasBase,
+                $request
+            ),
 
+        ];
+    }
+
+    private function obtenerUbicacionLider($incidencias, $request)
+    {
+        if($incidencias->isEmpty()){
+            return [
+                'titulo' => 'Ubicación líder',
+                'valor' => 'Sin datos'
+            ];
+        }
+
+
+        // Si no hay provincia seleccionada
+        if(!$request->provincia_id){
+
+            $provincia = $incidencias
+                ->groupBy(function($incidencia){
+                    return $incidencia->ciudad->provincia->nombre;
+                })
+                ->sortByDesc(function($grupo){
+                    return $grupo->count();
+                })
+                ->keys()
+                ->first();
+
+
+            return [
+                'titulo' => 'Provincia con más incidencias',
+                'valor' => $provincia
+            ];
+        }
+
+
+        // Si hay provincia seleccionada
+        $ciudad = $incidencias
+            ->groupBy(function($incidencia){
+                return $incidencia->ciudad->nombre;
+            })
+            ->sortByDesc(function($grupo){
+                return $grupo->count();
+            })
+            ->keys()
+            ->first();
+
+
+        return [
+            'titulo' => 'Ciudad con más incidencias',
+            'valor' => $ciudad
         ];
     }
 
@@ -140,58 +202,7 @@ class InformeController extends Controller
         return $resultado;
     }
 
-    /**
-     * Obtiene las incidencias filtradas por los parametros del request
-     */
-    private function obtenerIncidenciasFiltradas($request, $filtrarEstado = true)
-    {
-        $query = Incidencia::with([
-            'estado',
-            'ciudad.provincia',
-            'tipoIncidencia',
-            'historialEstados.estado'
-        ]);
-        // Filtro por fecha inicio
-        if($request->fecha_inicio){
-            $query->whereDate(
-                'created_at',
-                '>=',
-                $request->fecha_inicio
-            );
-        }
-        // Filtro por fecha fin
-        if($request->fecha_fin){
-            $query->whereDate(
-                'created_at',
-                '<=',
-                $request->fecha_fin
-            );
-        }
-        // Filtro por provincia
-        if($request->provincia_id){
-            $query->whereHas('ciudad', function($q) use ($request){
-                $q->where(
-                    'provincia_id',
-                    $request->provincia_id
-                );
-            });
-        }
-        // Filtro por estado
-        if($filtrarEstado && $request->estado_id){
-            $query->where(
-                'estado_id',
-                $request->estado_id
-            );
-        }
-        // Filtro por categoría
-        if($request->categoria_id){
-            $query->where(
-                'tipo_incidencia_id',
-                $request->categoria_id
-            );
-        }
-        return $query->get();
-    }
+    
 
     /**
      * Evolucion mensual
@@ -199,53 +210,35 @@ class InformeController extends Controller
     private function evolucionMensual($request)
     {
         // Respeta todos los filtros excepto estado
-        $incidencias = $this->obtenerIncidenciasFiltradas($request, false);
-
-
+        $incidencias = $this->informeService->obtenerIncidenciasFiltradas($request, false);
         // Agrupar incidencias por mes
         $datos = $incidencias
             ->groupBy(function($incidencia){
 
                 return $incidencia->created_at->format('Y-m');
-
             })
             ->sortKeys();
-
-
         // Etiquetas del eje X
         $labels = $datos->keys()
             ->map(function($fecha){
-
                 return \Carbon\Carbon::parse($fecha)
                     ->translatedFormat('M Y');
-
             })
             ->values();
-
-
         // Cantidad de incidencias por mes
         $valores = $datos
             ->map(function($mes){
-
                 return $mes->count();
-
             })
             ->values();
-
-
         return [
-
             'labels' => $labels,
-
             'datasets' => [
-
                 [
                     'label' => 'Incidencias registradas',
                     'data' => $valores
                 ]
-
             ]
-
         ];
     }
 
@@ -255,7 +248,7 @@ class InformeController extends Controller
     private function incidenciasPorCategoria($request)
     {
         // Respeta filtros excepto estado
-        $incidencias = $this->obtenerIncidenciasFiltradas($request, false);
+        $incidencias = $this->informeService->obtenerIncidenciasFiltradas($request, false);
         // Si hay categoría seleccionada mostramos subtipos
         if($request->categoria_id){
             $datos = $incidencias
@@ -427,7 +420,7 @@ class InformeController extends Controller
     private function flujoEstados($request)
     {
         // Ignoramos el filtro de estado porque queremos ver todos
-        $incidencias = $this->obtenerIncidenciasFiltradas($request, false);
+        $incidencias = $this->informeService->obtenerIncidenciasFiltradas($request, false);
 
         $estados = $incidencias
             ->groupBy(function($incidencia){
@@ -444,4 +437,36 @@ class InformeController extends Controller
     }
 
 
+    public function exportarExcel(Request $request)
+    {
+        return Excel::download(
+            new IncidenciasExport($request),
+            'Informe_Incidencias_' . now()->format('Y-m-d') . '.xlsx'
+        );
+    }
+
+    public function exportarPDF(Request $request)
+    {
+        $incidencias = $this->informeService
+            ->obtenerIncidenciasFiltradas($request, true);
+
+        $kpis = $this->obtenerKPIs($request);
+
+        $pdf = Pdf::loadView(
+            'informes.pdf',
+            compact(
+                'incidencias',
+                'kpis',
+                'request'
+            )
+        );
+
+        $pdf->setPaper('a4', 'landscape');
+
+        return $pdf->download(
+            'Informe_Incidencias_'
+            . now()->format('Y-m-d')
+            . '.pdf'
+        );
+    }
 }

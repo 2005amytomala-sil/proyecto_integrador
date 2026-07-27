@@ -17,15 +17,19 @@
 
         <div class="d-flex gap-2">
 
-            <button class="btn btn-outline-success">
+            <a
+                href="{{ route('informes.exportar.excel', request()->query()) }}"
+                class="btn btn-outline-success">
+
                 <i class="bi bi-file-earmark-excel"></i>
                 Exportar Excel
-            </button>
 
-            <button class="btn btn-outline-danger">
-                <i class="bi bi-file-earmark-pdf"></i>
-                Exportar PDF
-            </button>
+            </a>
+
+            <a href="{{ route('informes.exportar.pdf', request()->all()) }}"
+                class="btn btn-danger">
+                    Exportar PDF
+            </a>
 
         </div>
 
@@ -194,11 +198,11 @@
                 <div class="card-body">
 
                     <div class="text-muted">
-                        Ciudad con más incidencias
+                        {{ $kpis['ubicacion_lider']['titulo'] }}
                     </div>
 
                     <h2 class="fw-bold mt-2">
-                        {{ $kpis['ciudad_lider']}}
+                        {{ $kpis['ubicacion_lider']['valor'] }}
                     </h2>
 
                 </div>

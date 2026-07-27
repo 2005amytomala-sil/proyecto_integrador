@@ -70,6 +70,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perfil/{user}', [UserController::class, 'show'])->name('perfil.show');
 
     Route::get('/informes', [InformeController::class, 'index'])->name('informes.index');
+
+    Route::get('/informes/exportar/excel',[InformeController::class, 'exportarExcel']
+    )->name('informes.exportar.excel');
+
+    Route::get('/informes/exportar/pdf',[InformeController::class, 'exportarPDF']
+    )->name('informes.exportar.pdf');
+
+    
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
