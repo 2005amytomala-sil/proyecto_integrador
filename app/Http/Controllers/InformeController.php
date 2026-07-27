@@ -28,6 +28,10 @@ class InformeController extends Controller
         $estados = Estado::all();
         $flujoEstados = $this->flujoEstados($request);
         $incidenciasCategoria = $this->incidenciasPorCategoria($request);
+        $evolucionTemporal = $this->informeService
+        ->evolucionTemporal($request);
+        $prioridad = $this->informeService
+        ->incidenciasPorPrioridad($request);
 
         return view('informes.index', compact(
             'kpis',
@@ -35,7 +39,9 @@ class InformeController extends Controller
             'categorias',
             'estados',
             'flujoEstados',
-            'incidenciasCategoria'
+            'incidenciasCategoria',
+            'evolucionTemporal',
+            'prioridad'
         ));
     }
 
@@ -205,40 +211,101 @@ class InformeController extends Controller
     
 
     /**
-     * Evolucion mensual
+     * Evolución temporal de incidencias por ubicación
+     * - Sin provincia: agrupa por provincia
+     * - Con provincia: agrupa por ciudad
      */
-    private function evolucionMensual($request)
+    public function evolucionIncidenciasUbicacion($request)
     {
-        // Respeta todos los filtros excepto estado
-        $incidencias = $this->informeService->obtenerIncidenciasFiltradas($request, false);
-        // Agrupar incidencias por mes
-        $datos = $incidencias
+        // Ignora estado porque queremos analizar comportamiento general
+        $incidencias = $this->obtenerIncidenciasFiltradas($request, false);
+
+
+        // Determina el nivel geográfico
+        if($request->provincia_id){
+
+            // Provincia seleccionada -> mostrar ciudades
+            $datos = $incidencias->groupBy(function($incidencia){
+
+                return $incidencia->ciudad->nombre;
+
+            });
+
+        }else{
+
+            // Sin provincia -> mostrar provincias
+            $datos = $incidencias->groupBy(function($incidencia){
+
+                return $incidencia->ciudad->provincia->nombre;
+
+            });
+
+        }
+
+
+        // Obtener todos los meses existentes
+        $meses = $incidencias
             ->groupBy(function($incidencia){
 
                 return $incidencia->created_at->format('Y-m');
+
             })
-            ->sortKeys();
-        // Etiquetas del eje X
-        $labels = $datos->keys()
+            ->keys()
+            ->sort()
+            ->values();
+
+
+        $labels = $meses
             ->map(function($fecha){
+
                 return \Carbon\Carbon::parse($fecha)
                     ->translatedFormat('M Y');
+
             })
             ->values();
-        // Cantidad de incidencias por mes
-        $valores = $datos
-            ->map(function($mes){
-                return $mes->count();
-            })
-            ->values();
+
+
+        $datasets = [];
+
+
+        foreach($datos as $ubicacion => $grupo){
+
+            $conteoMeses = [];
+
+            foreach($meses as $mes){
+
+                $conteoMeses[] = $grupo
+                    ->filter(function($incidencia) use ($mes){
+
+                        return $incidencia->created_at
+                            ->format('Y-m') === $mes;
+
+                    })
+                    ->count();
+
+            }
+
+
+            $datasets[] = [
+
+                'label' => $ubicacion,
+
+                'data' => $conteoMeses
+
+            ];
+        }
+
+
         return [
+
+            'titulo' => $request->provincia_id
+                ? 'Evolución de incidencias por ciudad'
+                : 'Evolución de incidencias por provincia',
+
             'labels' => $labels,
-            'datasets' => [
-                [
-                    'label' => 'Incidencias registradas',
-                    'data' => $valores
-                ]
-            ]
+
+            'datasets' => $datasets
+
         ];
     }
 

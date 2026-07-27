@@ -3,27 +3,19 @@ body {
     font-size: 12px;
     color: #333;
 }
-
-
 .header {
     text-align: center;
     margin-bottom: 20px;
 }
-
-
 .titulo {
     font-size: 20px;
     font-weight: bold;
     color: #1F4E78;
 }
-
-
 .subtitulo {
     font-size: 12px;
     color: #666;
 }
-
-
 .seccion {
     margin-top: 20px;
     margin-bottom: 10px;
@@ -33,49 +25,35 @@ body {
     border-bottom: 2px solid #1F4E78;
     padding-bottom: 5px;
 }
-
-
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
-
-
 th {
     background-color: #1F4E78;
     color: white;
     padding: 8px;
     text-align: center;
 }
-
-
 td {
     border: 1px solid #cccccc;
     padding: 6px;
 }
-
-
 .kpi-table td:first-child {
     font-weight: bold;
     background-color: #f2f2f2;
 }
-
 .criterios{
     width:100%;
     border-collapse:collapse;
     margin-bottom:20px;
 }
-
-
 .criterios td{
     border:1px solid #d9d9d9;
     padding:8px;
 }
-
-
 .criterios td:first-child{
-
     width:35%;
     font-weight:bold;
     background:#f2f2f2;
@@ -92,97 +70,48 @@ td {
     margin-top: 15px;
     font-size: 11px;
 }
-
 .tabla-incidencias thead th {
-
     background-color: #1F4E78;
     color: white;
-
     padding: 8px;
-
     text-align: center;
-
     border: 1px solid #1F4E78;
-
     font-weight: bold;
 }
-
-
 .tabla-incidencias tbody td {
-
     padding: 7px;
-
     border: 1px solid #D9E2F3;
-
     vertical-align: middle;
-
 }
-
-
 /* Filas alternadas */
-
 .tabla-incidencias tbody tr:nth-child(even){
-
     background-color: #F4F8FC;
-
 }
-
-
 /* Hover no aplica en PDF pero mantiene estructura */
-
 .tabla-incidencias td:nth-child(1){
-
     text-align: center;
-
     width: 40px;
-
 }
-
-
 .tabla-incidencias td:nth-child(2){
-
     text-align: center;
-
     width: 80px;
-
 }
-
-
 .tabla-incidencias td:nth-child(7){
-
     text-align: center;
-
 }
-
-
 /* Evitar cortes raros */
-
 .tabla-incidencias tr {
-
     page-break-inside: avoid;
-
 }
-
 .footer {
-
     position: fixed;
-
     bottom: -35px;
-
     left: 0;
-
     right: 0;
-
     height: 30px;
-
     text-align: center;
-
     font-size: 9px;
-
     color: #666;
-
     border-top: 1px solid #D9D9D9;
-
     padding-top: 8px;
-
 }

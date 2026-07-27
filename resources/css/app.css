@@ -391,3 +391,12 @@ body.sidebar-open .page-content {
 #graficoCategoria{
     height: 300px !important;
 }
+
+
+#graficoEvolucionTemporal{
+    height:300px !important;
+}
+
+#graficoPrioridad{
+    height:300px !important;
+}
