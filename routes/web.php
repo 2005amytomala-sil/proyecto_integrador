@@ -52,13 +52,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('prioridades', PrioridadController::class);
 
-    Route::resource('asignaciones', AsignacionController::class);
-
     Route::resource('historial-estados', HistorialEstadoController::class);
 
     Route::resource('comentarios', ComentarioController::class);
-
-    Route::resource('evidencias', EvidenciaController::class);
 
     Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones.index');
     Route::get('/notificaciones/{notificacion}/ver', [NotificacionController::class, 'marcarYVer'])->name('notificaciones.ver');
@@ -77,11 +73,38 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/informes/exportar/pdf',[InformeController::class, 'exportarPDF']
     )->name('informes.exportar.pdf');
 
+    Route::patch('/incidencias/{incidencia}/validar', [IncidenciaController::class, 'validar'])
+    ->name('incidencias.validar');
+
+    Route::patch('/incidencias/{incidencia}/rechazar', [IncidenciaController::class, 'rechazar'])
+    ->name('incidencias.rechazar');
+
+    Route::get('/mis-asignaciones', [AsignacionController::class, 'misAsignaciones'])
+    ->name('asignaciones.mias');
+
+    Route::get('/mis-asignaciones/{id}', [AsignacionController::class, 'showResponsable'])
+        ->name('asignaciones.mias.show');
+
+    Route::post('/mis-asignaciones/{incidencia}/evidencias', [EvidenciaController::class, 'store'])
+    ->name('evidencias.store');
     
+    Route::patch('/mis-asignaciones/{incidencia}/resolver',[IncidenciaController::class, 'resolver'])
+    ->name('incidencias.resolver');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::resource('users', UserController::class);
 
+    Route::get('/asignaciones', [AsignacionController::class, 'index'])
+    ->name('asignaciones.index');
+
+    Route::get('/asignaciones/{incidencia}', [AsignacionController::class, 'show'])
+    ->name('asignaciones.show');
+    
+    Route::post('/asignaciones/{incidencia}', [AsignacionController::class, 'store'])
+    ->name('asignaciones.store');
+
+
 });
+

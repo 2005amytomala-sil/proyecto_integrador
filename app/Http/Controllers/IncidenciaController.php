@@ -15,6 +15,7 @@ use App\Models\HistorialEstado;
 use App\Models\Notificacion;
 use Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class IncidenciaController extends Controller
 {
@@ -316,6 +317,86 @@ class IncidenciaController extends Controller
 
     }
 
+    /*
+    Botones incidencia Validar/Rechazar
+    */
+    public function validar(Incidencia $incidencia)
+    {
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        // Solo Administrador y Operador
+        if (!in_array($rol, ['Administrador', 'Operador'])) {
+            abort(403, 'No tiene permiso para validar incidencias.');
+        }
+
+        // Solo se puede validar si está Registrada
+        if ($incidencia->estado->nombre !== 'Registrada') {
+            return back()->with('error', 'Solo se pueden validar incidencias registradas.');
+        }
+
+        // Buscar estado Validada
+        $estadoValidada = Estado::where('nombre', 'Validada')->first();
+
+        if (!$estadoValidada) {
+            return back()->with('error', 'No existe el estado Validada.');
+        }
+
+        // Actualizar estado
+        $incidencia->update([
+            'estado_id' => $estadoValidada->id,
+        ]);
+
+        // Registrar historial
+        HistorialEstado::create([
+            'incidencia_id' => $incidencia->id,
+            'estado_id' => $estadoValidada->id,
+            'usuario_id' => auth()->id(),
+            'observacion' => 'Incidencia validada.',
+        ]);
+
+        return redirect()
+            ->route('incidencias.show', $incidencia)
+            ->with('success', 'Incidencia validada correctamente.');
+    }
+
+    public function rechazar(Incidencia $incidencia)
+    {
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        if (!in_array($rol, ['Administrador', 'Operador'])) {
+            abort(403, 'No tiene permiso para rechazar incidencias.');
+        }    
+        // Solo puede rechazarse una incidencia registrada
+        if ($incidencia->estado->nombre !== 'Registrada') {
+            return back()->with('error', 'Solo se pueden rechazar incidencias registradas.');
+        }
+
+        $estadoRechazada = Estado::where('nombre', 'Rechazada')->first();
+
+        if (!$estadoRechazada) {
+            return back()->with('error', 'No existe el estado Rechazada.');
+        }
+
+        DB::transaction(function () use ($incidencia, $estadoRechazada) {
+
+            $incidencia->update([
+                'estado_id' => $estadoRechazada->id,
+            ]);
+
+            HistorialEstado::create([
+                'incidencia_id' => $incidencia->id,
+                'estado_id' => $estadoRechazada->id,
+                'usuario_id' => auth()->id(),
+                'observacion' => 'Incidencia rechazada.',
+            ]);
+        });
+
+        return redirect()
+            ->route('incidencias.show', $incidencia)
+            ->with('success', 'Incidencia rechazada correctamente.');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -386,5 +467,55 @@ class IncidenciaController extends Controller
         ->get();
         
         return response()->json($misIncidencias);
+    }
+
+    /*************************************/ 
+    public function resolver(Incidencia $incidencia)
+    {
+
+        if ($incidencia->estado->nombre === 'Resuelta') {
+
+            return back()->withErrors([
+                'resolver' => 'La incidencia ya fue resuelta.'
+            ]);
+
+        }
+
+        // Debe estar asignada al usuario autenticado
+        $asignado = $incidencia->asignaciones()
+            ->where('usuario_id', auth()->id())
+            ->where('activo', true)
+            ->exists();
+
+        if (!$asignado) {
+            abort(403);
+        }
+
+        // Debe existir al menos una evidencia "despues"
+        if (!$incidencia->evidencias()->where('tipo', 'despues')->exists()) {
+
+            return back()->withErrors([
+                'resolver' => 'Debe subir al menos una evidencia del resultado antes de resolver la incidencia.'
+            ]);
+
+        }
+
+        $estadoResuelta = Estado::where('nombre', 'Resuelta')->firstOrFail();
+
+        $incidencia->update([
+            'estado_id' => $estadoResuelta->id,
+            'fecha_resolucion' => Carbon::now(),
+        ]);
+        
+        HistorialEstado::create([
+            'incidencia_id' => $incidencia->id,
+            'estado_id'     => $estadoResuelta->id,
+            'usuario_id'    => auth()->id(),
+            'observacion'   => 'Incidencia marcada como resuelta.',
+        ]);
+
+        return redirect()
+            ->route('asignaciones.mias')
+            ->with('success', 'Incidencia marcada como resuelta.');
     }
 }

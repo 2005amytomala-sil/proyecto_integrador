@@ -67,6 +67,20 @@ class Incidencia extends Model
         return $this->hasMany(Asignacion::class);
     }
 
+    public function responsablePrincipal()
+    {
+        return $this->hasOne(Asignacion::class)
+            ->where('tipo_asignacion', 'responsable')
+            ->where('activo', true);
+    }
+
+    public function apoyos()
+    {
+        return $this->hasMany(Asignacion::class)
+            ->where('tipo_asignacion', 'apoyo')
+            ->where('activo', true);
+    }
+
     public function historialEstados()
     {
         return $this->hasMany(HistorialEstado::class)
@@ -86,5 +100,17 @@ class Incidencia extends Model
     public function notificaciones()
     {
         return $this->hasMany(Notificacion::class);
+    }
+
+    public function evidenciasAntes()
+    {
+        return $this->hasMany(Evidencia::class)
+            ->where('tipo', 'antes');
+    }
+
+    public function evidenciasDespues()
+    {
+        return $this->hasMany(Evidencia::class)
+            ->where('tipo', 'despues');
     }
 }

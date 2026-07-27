@@ -31,4 +31,14 @@ class Asignacion extends Model
     {
         return $this->belongsTo(User::class, 'operador_id');
     }
+
+    public function esResponsable()
+    {
+        return $this->tipo_asignacion === 'responsable';
+    }
+
+    public function esApoyo()
+    {
+        return $this->tipo_asignacion === 'apoyo';
+    }
 }
