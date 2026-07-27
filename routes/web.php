@@ -15,6 +15,7 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\EvidenciaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InformeController;
 
 Route::get('/', [AuthController::class, 'showLogin']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -63,6 +64,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/perfil', [UserController::class, 'miPerfil'])->name('perfil.mio');
     Route::get('/perfil/{user}', [UserController::class, 'show'])->name('perfil.show');
+
+    Route::get('/informes', [InformeController::class, 'index'])->name('informes.index');
+
+    Route::get('/informes/exportar/excel',[InformeController::class, 'exportarExcel']
+    )->name('informes.exportar.excel');
+
+    Route::get('/informes/exportar/pdf',[InformeController::class, 'exportarPDF']
+    )->name('informes.exportar.pdf');
 
     Route::patch('/incidencias/{incidencia}/validar', [IncidenciaController::class, 'validar'])
     ->name('incidencias.validar');

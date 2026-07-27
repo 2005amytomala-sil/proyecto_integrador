@@ -32,7 +32,8 @@
         <i class="bi bi-geo-alt"></i> Ubicaciones
     </a>
 
-    <a class="nav-link" href="#">
+    <a class="nav-link {{ request()->routeIs('informes.*') ? 'active' : '' }}"
+       href="{{ route('informes.index') }}">
         <i class="bi bi-bar-chart"></i> Informes
     </a>
 

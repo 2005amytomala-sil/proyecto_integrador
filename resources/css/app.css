@@ -384,3 +384,19 @@ body.sidebar-open .page-content {
 
     
 }
+#graficoFlujoEstados{
+    height:300px !important;
+}
+
+#graficoCategoria{
+    height: 300px !important;
+}
+
+
+#graficoEvolucionTemporal{
+    height:300px !important;
+}
+
+#graficoPrioridad{
+    height:300px !important;
+}
