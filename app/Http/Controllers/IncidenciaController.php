@@ -471,6 +471,15 @@ class IncidenciaController extends Controller
 
     public function resolver(Incidencia $incidencia)
     {
+
+        if ($incidencia->estado->nombre === 'Resuelta') {
+
+            return back()->withErrors([
+                'resolver' => 'La incidencia ya fue resuelta.'
+            ]);
+
+        }
+
         // Debe estar asignada al usuario autenticado
         $asignado = $incidencia->asignaciones()
             ->where('usuario_id', auth()->id())
