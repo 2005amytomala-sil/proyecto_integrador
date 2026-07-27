@@ -64,11 +64,13 @@
             </div>
 
         </div>
-        <div class="card shadow-sm mt-4">
 
+        @if($incidencia->estado->nombre != 'Resuelta')
+        <div class="card shadow-sm mt-4">
             <div class="card-header">
                 Subir evidencia
             </div>
+        @endif
 
             <div class="card-body">
 
@@ -243,7 +245,7 @@
 
                 </div>
 
-                @if($incidencia->evidenciasDespues->count())
+                @if($incidencia->estado->nombre != 'Resuelta' && $incidencia->evidenciasDespues->count())
                     <div class="card shadow-sm mt-4">
 
                         <div class="card-body text-end">
@@ -264,6 +266,24 @@
                     </div>
                 @endif
 
+                @if($incidencia->estado->nombre == 'Resuelta')
+                <div class="alert alert-success mt-4">
+                    <h5 class="mb-2">
+                        ✔ Incidencia resuelta
+                    </h5>
+
+                    <p class="mb-0">
+                        Esta incidencia fue marcada como resuelta.
+                        <br>
+                        Fecha de resolución:
+                        <strong>
+
+                            {{ $incidencia->fecha_resolucion?->format('d/m/Y H:i') }}
+                        </strong>
+                    </p>
+                </div>
+                @endif
+                
             </div>
 
         </div>

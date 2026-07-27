@@ -38,6 +38,14 @@ class EvidenciaController extends Controller
 
         $incidencia = Incidencia::with('asignaciones')->findOrFail($id);
 
+        if ($incidencia->estado->nombre === 'Resuelta') {
+
+            return back()->withErrors([
+                'archivo' => 'No puede subir evidencias porque la incidencia ya fue resuelta.'
+            ]);
+
+        }
+
         // Verificar que el usuario tenga asignada la incidencia
         if (!$incidencia->asignaciones()
             ->where('usuario_id', auth()->id())
