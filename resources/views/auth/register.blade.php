@@ -1,87 +1,140 @@
 @extends('layouts.guest')
 
 @section('content')
+<link
+rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<div class="container register-container">
-    <div class="card card-register mb-3 shadow-lg">
-    <img class="img-register" src="{{ asset('img/login/register.png') }}" class="card-img-top" alt="Registro ciudadano">
-    <div class="card-body register-body">
-        <h4 class="card-title text-center">Registro ciudadano</h4>
-        <p class="card-text text-center">Crea tu cuenta para reportar incidencias.</p>
-        <form method="POST" action="{{ route('register.store') }}" class="row g-3">
-        @csrf
+<div class="register-container">
+    <div class="register-wrapper">
+        <section class="register-image">
+            <img 
+                src="{{ asset('img/login/register.png') }}"
+                alt="Registro"
+            >
+            <div class="register-overlay"></div>
+            <div class="register-image-text">
+                <h1>
+                    Únete al sistema
+                    de incidencias
+                </h1>
+                <p>
+                    Registra reportes y contribuye
+                    a mejorar tu comunidad.
+                </p>
+            </div>
+        </section>        
+        <section class="register-form-container">
+            <div class="register-form">
+                <div class="register-header">
+                    <div class="register-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <h2>
+                        Crear cuenta
+                    </h2>
+                    <p>
+                        Completa tus datos para registrarte
+                    </p>
+                </div>
+                <form method="POST" action="{{ route('register.store') }}" class="row g-3">
+                    @csrf
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-            <div class="col-md-6">
-                <label class="form-label">Cédula</label>
-                <input type="text" name="cedula" class="form-control" value="{{ old('cedula') }}" required>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Cédula</label>
+                                <div class="input-icon">
+                                    <i class="bi bi-card-text"></i>
+                                    <input type="text" name="cedula" class="form-control" value="{{ old('cedula') }}" required>
+                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nombres</label>
+                                <div class="input-icon">
+                                    <i class="bi bi-person"></i>
+                                    <input type="text" name="nombres" class="form-control" value="{{ old('nombres') }}" required>
+                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Apellidos</label>
+                            <input type="text" name="apellidos" class="form-control" value="{{ old('apellidos') }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputEmail4" class="form-label">Email</label>
+                                <div class="input-icon">
+                                    <i class="bi bi-envelope"></i>
+                                    <input type="email" name="email" class="form-control" id="inputEmail4" value="{{ old('email') }}" required>
+                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputPhone" class="form-label">Teléfono</label>
+                                <div class="input-icon">
+                                    <i class="bi bi-telephone"></i>
+                                    <input type="text" name="telefono" class="form-control" id="inputPhone" value="{{ old('telefono') }}" required>
+                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputCountry" class="form-label">País</label>
+                            <select id="inputCountry" name="pais_id" class="form-select" required>
+                            <option selected>Seleccione un país</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputProvince" class="form-label">Provincia</label>
+                            <select id="inputProvince" name="provincia_id" class="form-select" required>
+                            <option selected>Seleccione una provincia</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="inputCity" class="form-label">Ciudad</label>
+                            <select id="inputCity" name="ciudad_id" class="form-select" required>
+                            <option value="">Seleccione una ciudad</option>
+                        </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label for="inputAddress" class="form-label">Dirección</label>
+                                <div class="input-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <input type="text" name="direccion" class="form-control" id="inputAddress" placeholder="1234 Main St" value="{{ old('direccion')}}" required>
+                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputPassword" class="form-label">Contraseña</label>
+                                <div class="input-icon">
+                                    <i class="bi bi-lock"></i>
+                                    <input type="password" name="password" class="form-control" id="inputPassword" required>
+                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputPasswordConfirm" class="form-label">Confirmar contraseña</label>
+                                <div class="input-icon">
+                                    <i class="bi bi-lock"></i>
+                                    <input type="password" name="password_confirmation" class="form-control" id="inputPasswordConfirm">   
+                                </div>
+                        </div>
+                    </div>
+                        <button class="btn-register">
+                            Crear cuenta
+                        </button>
+                        <div class="register-login">
+                            ¿Ya tienes una cuenta?
+                            <a href="{{ route('login') }}">
+                                Iniciar sesión
+                            </a>
+                    </div>
+                </form>
             </div>
-            <div class="col-md-6">
-                <label class="form-label">Nombres</label>
-                <input type="text" name="nombres" class="form-control" value="{{ old('nombres') }}" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Apellidos</label>
-                <input type="text" name="apellidos" class="form-control" value="{{ old('apellidos') }}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="inputEmail4" class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" id="inputEmail4" value="{{ old('email') }}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="inputPhone" class="form-label">Teléfono</label>
-                <input type="text" name="telefono" class="form-control" id="inputPhone" value="{{ old('telefono') }}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="inputCountry" class="form-label">País</label>
-                <select id="inputCountry" name="pais_id" class="form-select" required>
-                <option selected>Seleccione un país</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label for="inputProvince" class="form-label">Provincia</label>
-                <select id="inputProvince" name="provincia_id" class="form-select" required>
-                <option selected>Seleccione una provincia</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label for="inputCity" class="form-label">Ciudad</label>
-                <select id="inputCity" name="ciudad_id" class="form-select" required>
-                <option value="">Seleccione una ciudad</option>
-            </select>
-            </div>
-            <div class="col-md-8">
-                <label for="inputAddress" class="form-label">Dirección</label>
-                <input type="text" name="direccion" class="form-control" id="inputAddress" placeholder="1234 Main St" value="{{ old('direccion')}}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="inputPassword" class="form-label">Contraseña</label>
-                <input type="password" name="password" class="form-control" id="inputPassword" required>
-            </div>
-            <div class="col-md-6">
-                <label for="inputPasswordConfirm" class="form-label">Confirmar contraseña</label>
-                <input type="password" name="password_confirmation" class="form-control" id="inputPasswordConfirm">   
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary w-100">
-                    Registrar
-                </button>
-            </div>
-            <div class="text-center mt-3">
-                ¿Ya tienes una cuenta?
-                <a href="{{ route('login') }}">Iniciar sesión</a>
-            </div>
-        </form>
-    </div>
+        </section>
     </div>
 </div>
 @endsection

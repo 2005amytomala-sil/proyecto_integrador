@@ -9,11 +9,13 @@
 
     @vite([
         'resources/css/auth.css',
+        'resources/css/login.css',
+        'resources/css/register.css',
         'resources/js/app.js'
     ])
 </head>
-<body>
-
+<body class="auth-body">
+    
     @yield('content')
 
     @stack('scripts')
