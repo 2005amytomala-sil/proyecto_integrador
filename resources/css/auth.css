@@ -1,39 +1,9 @@
-.login-container{
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+/* ===================================
+   ESTILOS GENERALES AUTH
+=================================== */
 
-.card-login {
-    max-width: 750px;
-}
-
-.login-body {
-    padding: 2rem;
-}
-
-body {
-    background-color: #111c26f0;
-}
-
-.card-register {
-    max-width: 800px;
-}
-
-.register-container {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 30px;
-    padding-bottom: 30px;   
-}
-
-.img-register {
-    height: 300px;
-}
-
-.register-body {
-    padding: 2.5rem;
+.auth-body{
+    margin:0;
+    font-family:"Segoe UI", sans-serif;
+    background:#eef3f8;
 }
