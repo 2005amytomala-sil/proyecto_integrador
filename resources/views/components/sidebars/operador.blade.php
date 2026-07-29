@@ -7,13 +7,14 @@
        href="{{ route('incidencias.index') }}">
         <i class="bi bi-exclamation-circle"></i> Incidencias
     </a>
-    
+
     <a class="nav-link" href="#">
         <i class="bi bi-check-circle"></i> Validar Incidencias
     </a>
 
-    <a class="nav-link" href="#">
-        <i class="bi bi-person-check"></i> Asignar Responsables
+    <a class="nav-link {{ request()->routeIs('asignaciones.*') ? 'active' : '' }}"
+       href="{{ route('asignaciones.index') }}">
+        <i class="bi bi-calendar-check"></i> Asignaciones
     </a>
 
     <a class="nav-link" href="#">
