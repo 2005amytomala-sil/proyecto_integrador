@@ -42,30 +42,22 @@ class IncidenciaController extends Controller
      */
     public function create()
     {
+        $usuario = auth()->user();
+
+        if ($usuario->rol->nombre !== 'Ciudadano') {
+            abort(403, 'Solo los ciudadanos pueden crear incidencias.');
+        }
+
         $ciudades = Ciudad::orderBy('nombre')->get();
         $tipos = TipoIncidencia::orderBy('nombre')->get();
         $subtipos = SubtipoIncidencia::orderBy('nombre')->get();
         $prioridades = Prioridad::orderBy('nombre')->get();
 
-        $usuario = auth()->user();
-        $rol = $usuario->rol->nombre;
-
-        $ciudadanos = collect();
-
-        if (in_array($rol, ['Administrador', 'Operador'])) {
-
-            $ciudadanos = User::whereHas('rol', function ($query) {
-                $query->where('nombre', 'Ciudadano');
-            })->orderBy('nombres')->get();
-
-        }
-
         return view('incidencias.create', compact(
             'ciudades',
             'tipos',
             'subtipos',
-            'prioridades',
-            'ciudadanos'
+            'prioridades'
         ));
     }
     /**
@@ -87,6 +79,10 @@ class IncidenciaController extends Controller
             'evidencia.*' => 'image|mimes:jpg,jpeg,png|max:5120',
         ]);
         $usuario = auth()->user();
+        if ($usuario->rol->nombre !== 'Ciudadano') {
+            abort(403, 'No tiene permiso para crear incidencias.');
+        }
+
         $rol = $usuario->rol->nombre;
 
         if ($rol === 'Ciudadano') {
@@ -190,17 +186,18 @@ class IncidenciaController extends Controller
         $usuario = auth()->user();
         $rol = $usuario->rol->nombre;
 
-        if ($rol === 'Ciudadano') {
-
-            if ($incidencia->ciudadano_id != $usuario->id) {
-                abort(403, 'No tiene permiso para editar esta incidencia.');
+        if ($rol !== 'Ciudadano') {
+                abort(403, 'Solo los ciudadanos pueden editar incidencias.');
             }
 
-            if ($incidencia->estado->nombre !== 'Registrada') {
-                abort(403, 'Esta incidencia ya no puede ser modificada.');
-            }
-
+        if ($incidencia->ciudadano_id != $usuario->id) {
+            abort(403, 'No tiene permiso para editar esta incidencia.');
         }
+
+        if ($incidencia->estado->nombre !== 'Registrada') {
+            abort(403, 'Esta incidencia ya no puede ser modificada.');
+        }
+
 
         $ciudades = Ciudad::orderBy('nombre')->get();
         $tipos = TipoIncidencia::orderBy('nombre')->get();
@@ -208,18 +205,12 @@ class IncidenciaController extends Controller
         $prioridades = Prioridad::orderBy('nombre')->get();
         $estados = Estado::orderBy('orden')->get();
 
-        $ciudadanos = User::whereHas('rol', function ($query) {
-            $query->where('nombre', 'Ciudadano');
-        })->orderBy('nombres')->get();
-
         return view('incidencias.edit', compact(
             'incidencia',
             'ciudades',
             'tipos',
             'subtipos',
             'prioridades',
-            'ciudadanos',
-            'estados'
         ));
     }
     /**
@@ -230,24 +221,16 @@ class IncidenciaController extends Controller
         $usuario = auth()->user();
         $rol = $usuario->rol->nombre;
 
-        if ($rol === 'Ciudadano') {
-
-            if ($incidencia->ciudadano_id != $usuario->id) {
-                abort(403, 'No tiene permiso para modificar esta incidencia.');
-            }
-
-            if ($incidencia->estado->nombre !== 'Registrada') {
-                abort(403, 'Esta incidencia ya no puede ser modificada.');
-            }
+        if ($rol !== 'Ciudadano') {
+            abort(403, 'Solo los ciudadanos pueden modificar incidencias.');
         }
-        if ($rol === 'Ciudadano') {
 
-            $request->merge([
-                'estado_id' => $incidencia->estado_id,
-                'prioridad_id' => $incidencia->prioridad_id,
-                'ciudadano_id' => $incidencia->ciudadano_id,
-            ]);
+        if ($incidencia->ciudadano_id != $usuario->id) {
+            abort(403, 'No tiene permiso para modificar esta incidencia.');
+        }
 
+        if ($incidencia->estado->nombre !== 'Registrada') {
+            abort(403, 'Esta incidencia ya no puede ser modificada.');
         }
 
         $validated = $request->validate([
@@ -405,6 +388,10 @@ class IncidenciaController extends Controller
     {
         $usuario = auth()->user();
         $rol = $usuario->rol->nombre;
+
+         if ($rol === 'Responsable') {
+            abort(403, 'Los responsables no pueden eliminar incidencias.');
+        }
 
         if ($rol === 'Ciudadano') {
 
