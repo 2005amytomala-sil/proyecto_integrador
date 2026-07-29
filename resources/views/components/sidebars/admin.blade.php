@@ -20,14 +20,6 @@
         <i class="bi bi-people"></i> Usuarios
     </a>
 
-    <a class="nav-link" href="#">
-        <i class="bi bi-tags"></i> Categorías
-    </a>
-
-    <a class="nav-link" href="#">
-        <i class="bi bi-geo-alt"></i> Ubicaciones
-    </a>
-
     <a class="nav-link {{ request()->routeIs('informes.*') ? 'active' : '' }}"
        href="{{ route('informes.index') }}">
         <i class="bi bi-bar-chart"></i> Informes

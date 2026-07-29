@@ -18,7 +18,17 @@
             <h1 class="h3 mb-0">Gestión de Incidentes</h1>
             <p class="text-muted mb-0">Administre todos los incidentes reportados</p>
         </div>
-        <a href="{{ route('incidencias.create') }}" class="btn btn-primary">+ Nuevo Incidente</a>
+
+        @php
+            $rol = auth()->user()->rol->nombre;
+        @endphp
+
+        @if($rol === 'Ciudadano')
+            <a href="{{ route('incidencias.create') }}" class="btn btn-primary">
+                + Nuevo Incidente
+            </a>
+        @endif
+
     </div>
 
     <div class="card mb-4 shadow-sm">
