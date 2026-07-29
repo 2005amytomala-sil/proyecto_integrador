@@ -325,6 +325,7 @@ class IncidenciaController extends Controller
             return back()->with('error', 'No existe el estado Validada.');
         }
 
+        DB::transaction(function () use ($incidencia, $estadoValidada) {
         // Actualizar estado
         $incidencia->update([
             'estado_id' => $estadoValidada->id,
@@ -337,6 +338,18 @@ class IncidenciaController extends Controller
             'usuario_id' => auth()->id(),
             'observacion' => 'Incidencia validada.',
         ]);
+
+        if ($incidencia->ciudadano_id) {
+                Notificacion::create([
+                    'usuario_id'    => $incidencia->ciudadano_id,
+                    'incidencia_id' => $incidencia->id,
+                    'titulo'        => 'Incidencia Validada',
+                    'mensaje'       => "Tu incidencia #{$incidencia->id} ha sido validada y está lista para asignación.",
+                    'leida'         => false
+                ]);
+            }
+
+        });
 
         return redirect()
             ->route('incidencias.show', $incidencia)
@@ -374,6 +387,16 @@ class IncidenciaController extends Controller
                 'usuario_id' => auth()->id(),
                 'observacion' => 'Incidencia rechazada.',
             ]);
+
+            if ($incidencia->ciudadano_id) {
+                Notificacion::create([
+                    'usuario_id'    => $incidencia->ciudadano_id,
+                    'incidencia_id' => $incidencia->id,
+                    'titulo'        => 'Incidencia Rechazada',
+                    'mensaje'       => "Tu incidencia #{$incidencia->id} ha sido rechazada por el operador.",
+                    'leida'         => false
+                ]);
+            }
         });
 
         return redirect()
@@ -489,6 +512,8 @@ class IncidenciaController extends Controller
 
         $estadoResuelta = Estado::where('nombre', 'Resuelta')->firstOrFail();
 
+        DB::transaction(function () use ($incidencia, $estadoResuelta) {
+
         $incidencia->update([
             'estado_id' => $estadoResuelta->id,
             'fecha_resolucion' => Carbon::now(),
@@ -500,6 +525,18 @@ class IncidenciaController extends Controller
             'usuario_id'    => auth()->id(),
             'observacion'   => 'Incidencia marcada como resuelta.',
         ]);
+
+        if ($incidencia->ciudadano_id) {
+                Notificacion::create([
+                    'usuario_id'    => $incidencia->ciudadano_id,
+                    'incidencia_id' => $incidencia->id,
+                    'titulo'        => 'Incidencia Resuelta',
+                    'mensaje'       => "Tu incidencia #{$incidencia->id} ha sido resuelta con éxito.",
+                    'leida'         => false
+                ]);
+            }
+
+        });
 
         return redirect()
             ->route('asignaciones.mias')
