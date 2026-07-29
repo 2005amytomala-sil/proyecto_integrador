@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Estado;
 use App\Models\Incidencia;
 use App\Models\HistorialEstado;
+use App\Models\Notificacion;
 
 class AsignacionController extends Controller
 {
@@ -94,7 +95,8 @@ class AsignacionController extends Controller
             $request,
             $incidencia,
             $estadoEnProceso,
-            $responsable
+            $responsable,
+            $apoyos,
         ) {
 
             // Responsable principal
@@ -137,6 +139,25 @@ class AsignacionController extends Controller
                                     $responsable->apellidos . '.',
             ]);
             logger('Historial creado');
+
+            // 1. Unificar todos los IDs de usuarios asignados
+            $todosLosAsignados = collect([$request->responsable_id])
+                ->concat($apoyos)
+                ->unique();
+
+            // 2. Iterar y crear la notificación para cada uno
+            foreach ($todosLosAsignados as $uId) {
+                $esResponsable = ($uId == $request->responsable_id);
+                $rol = $esResponsable ? 'responsable principal' : 'personal de apoyo';
+
+                Notificacion::create([
+                    'usuario_id'    => $uId,
+                    'incidencia_id' => $incidencia->id,
+                    'titulo'        => 'Nueva asignación de trabajo',
+                    'mensaje'       => "Se te ha asignado como {$rol} en la incidencia #{$incidencia->id}: {$incidencia->titulo}",
+                    'leida'         => false,
+                ]);
+            }
 
         });
 
