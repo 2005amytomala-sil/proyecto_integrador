@@ -100,11 +100,25 @@ class EvidenciaController extends Controller
      */
     public function destroy(Evidencia $evidencia)
     {
-        $incidenciaId = $evidencia->incidencia_id;
 
-        if ($evidencia->archivo && Storage::disk('public')->exists($evidencia->archivo)) {
-            Storage::disk('public')->delete($evidencia->archivo);
+        $usuario = auth()->user();
+        $rol = $usuario->rol->nombre;
+
+        $incidencia = $evidencia->incidencia;
+
+        if ($rol === 'Ciudadano') {
+
+            if ($incidencia->ciudadano_id != $usuario->id) {
+                abort(403, 'No puede eliminar esta evidencia.');
+            }
+
+            if ($incidencia->estado->nombre !== 'Registrada') {
+                abort(403, 'No puede eliminar evidencias en este estado.');
+            }
         }
+            if ($evidencia->archivo && Storage::disk('public')->exists($evidencia->archivo)) {
+                Storage::disk('public')->delete($evidencia->archivo);
+            }
 
         $evidencia->delete();
 

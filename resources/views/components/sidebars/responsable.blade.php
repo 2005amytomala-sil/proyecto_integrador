@@ -3,6 +3,11 @@
         <i class="bi bi-grid"></i> Panel de Control
     </a>
 
+    <a class="nav-link {{ request()->routeIs('incidencias.index') ? 'active' : '' }}"
+       href="{{ route('incidencias.index') }}">
+        <i class="bi bi-exclamation-circle"></i> Incidencias
+    </a>
+    
     <a class="nav-link" href="#">
         <i class="bi bi-bell"></i> Notificaciones
     </a>

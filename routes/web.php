@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::patch('/mis-asignaciones/{incidencia}/resolver',[IncidenciaController::class, 'resolver'])
     ->name('incidencias.resolver');
+    
+    Route::delete('/evidencias/{evidencia}', [EvidenciaController::class, 'destroy'])
+    ->name('evidencias.destroy');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
