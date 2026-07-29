@@ -16,6 +16,7 @@ use App\Http\Controllers\EvidenciaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InformeController;
+use App\Http\Controllers\ConfiguracionController;
 
 Route::get('/', [AuthController::class, 'showLogin']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -64,6 +65,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/perfil', [UserController::class, 'miPerfil'])->name('perfil.mio');
     Route::get('/perfil/{user}', [UserController::class, 'show'])->name('perfil.show');
+
+    Route::get('/configuracion', [ConfiguracionController::class, 'miconfiguracion'])->name('configuracion.index');
+    Route::put('/configuracion/perfil', [ConfiguracionController::class, 'updatePerfil'])->name('configuracion.updatePerfil');
+    Route::put('/configuracion/password', [ConfiguracionController::class, 'updatePassword'])->name('configuracion.updatePassword');
+
 
     Route::get('/informes', [InformeController::class, 'index'])->name('informes.index');
 
