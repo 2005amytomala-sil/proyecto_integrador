@@ -3,27 +3,13 @@
         <i class="bi bi-grid"></i> Panel de Control
     </a>
 
-    <a class="nav-link {{ request()->routeIs('incidencias.index') ? 'active' : '' }}" href="{{ route('incidencias.index') }}">
-        <i class="bi bi-tools"></i>Mis Incidencias
-    </a>
-
-    <a class="nav-link" href="#">
-        <i class="bi bi-chat-dots"></i> Comentarios
-    </a>
-
-    <a class="nav-link" href="#">
-        <i class="bi bi-upload"></i> Evidencias
-    </a>
-
     <a class="nav-link" href="#">
         <i class="bi bi-bell"></i> Notificaciones
     </a>
 
     @if(auth()->user()->rol->nombre == 'Responsable')
     <li class="nav-item">
-        <a class="nav-link"
-        href="{{ route('asignaciones.mias') }}">
-
+        <a class="nav-link" href="{{ route('asignaciones.mias') }}">
             Mis asignaciones
         </a>
     </li>

@@ -22,9 +22,8 @@
         </div>
 
         <div class="d-flex align-items-center gap-2">
-            @if(
-                in_array($rol, ['Administrador', 'Operador']) ||
-                ($rol === 'Ciudadano' && $usuario->id == $incidencia->ciudadano_id)
+            @if($rol === 'Ciudadano' && $usuario->id == $incidencia->ciudadano_id &&
+                $incidencia->estado->nombre === 'Registrada'
             )
                 <a href="{{ route('incidencias.edit', $incidencia->id) }}"
                 class="btn btn-outline-primary btn-sm">
@@ -33,10 +32,7 @@
                 </a>
             @endif
 
-            @if(
-                in_array($rol, ['Administrador', 'Operador']) ||
-                (
-                    $rol === 'Ciudadano' &&
+            @if(in_array($rol, ['Administrador', 'Operador']) || ( $rol === 'Ciudadano' &&
                     $usuario->id == $incidencia->ciudadano_id &&
                     in_array($incidencia->estado->nombre, [
                         'Registrada',

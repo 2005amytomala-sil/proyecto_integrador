@@ -10,10 +10,6 @@
         <i class="bi bi-exclamation-circle"></i> Incidencias
     </a>
 
-    <a class="nav-link {{ request()->routeIs('incidencias.mias') ? 'active' : '' }}" href="{{ route('incidencias.mias')}}">
-        <i class="bi bi-list-check"></i> Mis incidencias
-    </a>
-
     <a class="nav-link {{ request()->routeIs('asignaciones.*') ? 'active' : '' }}"
        href="{{ route('asignaciones.index') }}">
         <i class="bi bi-calendar-check"></i> Asignaciones
