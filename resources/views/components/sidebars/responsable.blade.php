@@ -15,6 +15,7 @@
     @if(auth()->user()->rol->nombre == 'Responsable')
     <li class="nav-item">
         <a class="nav-link" href="{{ route('asignaciones.mias') }}">
+            <i class="bi bi-person-check me-2"></i>
             Mis asignaciones
         </a>
     </li>

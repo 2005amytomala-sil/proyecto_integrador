@@ -12,8 +12,8 @@
     min-height: 72px;
     position: fixed;
     top: 0;
-    left: 250px; /* navbar starts to the right of sidebar */
-    width: calc(100% - 250px);
+    left: 0; /* navbar starts to the right of sidebar */
+    width: 100%;
     box-sizing: border-box;
     z-index: 1060;
 }
@@ -81,6 +81,11 @@ body.sidebar-open .page-content {
     width: calc(100% - 250px);
     transition: all 0.3s ease;
     min-height: 100vh;
+}
+
+body.sidebar-open .main-content {
+    margin-left: 0;
+    width: 100%;
 }
 
 
@@ -327,6 +332,10 @@ body.sidebar-open .page-content {
 
     body.sidebar-open .page-content {
         margin-left: 0;
+        width: 100%;
+    }
+    body.sidebar-open .navbar-dashboard {
+        left: 0;
         width: 100%;
     }
 
