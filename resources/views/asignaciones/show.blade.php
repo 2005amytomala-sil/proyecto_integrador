@@ -78,45 +78,39 @@
                     @endforeach
 
                 </select>
-
             </div>
 
             <div class="mb-3">
-
                 <label class="form-label">
-
                     Personal de apoyo
-
                 </label>
 
-                @foreach($trabajadores as $trabajador)
+                <select
+                    id="selectApoyo"
+                    class="form-select">
 
-                    <div class="form-check">
+                    <option value="">
+                        Seleccione personal de apoyo...
+                    </option>
 
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="apoyos[]"
+                    @foreach($trabajadores as $trabajador)
+
+                        <option 
                             value="{{ $trabajador->id }}"
-                            id="trabajador{{ $trabajador->id }}">
-
-                        <label
-                            class="form-check-label"
-                            for="trabajador{{ $trabajador->id }}">
+                            data-nombre="{{ $trabajador->nombres }} {{ $trabajador->apellidos }}">
 
                             {{ $trabajador->nombres }}
                             {{ $trabajador->apellidos }}
 
-                        </label>
+                        </option>
 
-                    </div>
-
-                @endforeach
-
+                    @endforeach
+                </select>
+                <div id="listaApoyos" class="mt-3">
+                </div>
             </div>
 
             <div class="mb-3">
-
                 <label class="form-label">
 
                     Observación

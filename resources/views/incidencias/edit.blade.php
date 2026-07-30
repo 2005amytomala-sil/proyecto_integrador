@@ -78,10 +78,12 @@
                         <div class="row gy-3">
                             <div class="col-md-4">
                                 <label class="form-label">Ciudad</label>
-                                <select name="ciudad_id" class="form-select" required>
+                                <select name="ciudad_id" id="ciudad_id" class="form-select" required>
                                     <option value="">Seleccione...</option>
                                     @foreach($ciudades as $ciudad)
-                                        <option value="{{ $ciudad->id }}" {{ old('ciudad_id', $incidencia->ciudad_id) == $ciudad->id ? 'selected' : '' }}>
+                                        <option value="{{ $ciudad->id }}" data-latitud="{{ $ciudad->latitud }}" data-longitud="{{ $ciudad->longitud }}"
+                                            {{ old('ciudad_id', $incidencia->ciudad_id) == $ciudad->id ? 'selected' : '' }}
+                                        >
                                             {{ $ciudad->nombre }}
                                         </option>
                                     @endforeach
@@ -382,6 +384,10 @@
             'map',
             'latitud',
             'longitud'
+        );
+
+        MapaIncidencias.centrarPorCiudad(
+        'ciudad_id'
         );
 
     });

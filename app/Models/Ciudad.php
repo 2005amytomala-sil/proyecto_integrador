@@ -11,13 +11,14 @@ class Ciudad extends Model
     protected $fillable = [
         'provincia_id',
         'nombre',
+        'latitud',
+        'longitud'
     ];
 
     public function provincia()
     {
         return $this->belongsTo(Provincia::class);
     }
-    // TODO: TOMAR EN CUENTA EN EL DESARROLLO FUTURO EL USU DE ESTOS METODOS
      
     public function incidencias()
     {
