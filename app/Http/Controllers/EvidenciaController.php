@@ -100,11 +100,14 @@ class EvidenciaController extends Controller
      */
     public function destroy(Evidencia $evidencia)
     {
-
         $usuario = auth()->user();
         $rol = $usuario->rol->nombre;
 
         $incidencia = $evidencia->incidencia;
+
+        if ($rol === 'Responsable') {
+            abort(403, 'Los responsables no pueden eliminar evidencias.');
+        }
 
         if ($rol === 'Ciudadano') {
 
@@ -116,14 +119,25 @@ class EvidenciaController extends Controller
                 abort(403, 'No puede eliminar evidencias en este estado.');
             }
         }
-            if ($evidencia->archivo && Storage::disk('public')->exists($evidencia->archivo)) {
-                Storage::disk('public')->delete($evidencia->archivo);
-            }
+
+        $cantidadEvidencias = $incidencia->evidencias()->count();
+
+        if ($cantidadEvidencias <= 1) {
+            return redirect()
+                ->route('incidencias.edit', $incidencia->id)
+                ->withErrors([
+                    'evidencia' => 'La incidencia debe conservar al menos una evidencia.'
+                ]);
+        }
+
+        if ($evidencia->archivo && Storage::disk('public')->exists($evidencia->archivo)) {
+            Storage::disk('public')->delete($evidencia->archivo);
+        }
 
         $evidencia->delete();
 
         return redirect()
-            ->route('incidencias.edit', $incidenciaId)
+            ->route('incidencias.edit', $incidencia->id)
             ->with('success', 'Evidencia eliminada correctamente.');
     }
 }

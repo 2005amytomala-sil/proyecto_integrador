@@ -75,7 +75,7 @@ class IncidenciaController extends Controller
             'descripcion' => 'required|string',
             'latitud' => 'nullable|numeric|between:-90,90',
             'longitud' => 'nullable|numeric|between:-180,180',
-            'evidencia' => 'nullable|array',
+            'evidencia' => 'required|array|min:1',
             'evidencia.*' => 'image|mimes:jpg,jpeg,png|max:5120',
         ]);
         $usuario = auth()->user();
@@ -239,19 +239,38 @@ class IncidenciaController extends Controller
             'tipo_incidencia_id' => 'required|exists:tipos_incidencia,id',
             'subtipo_incidencia_id' => 'required|exists:subtipos_incidencia,id',
             'prioridad_id' => 'required|exists:prioridades,id',
-            'estado_id' => 'required|exists:estados,id',
             'titulo' => 'required|string|max:150',
             'descripcion' => 'required|string',
             'latitud' => 'nullable|numeric|between:-90,90',
             'longitud' => 'nullable|numeric|between:-180,180',
-            'evidencia' => 'nullable|array',
+            'evidencia' => 'nullable|array|min:1',
             'evidencia.*' => 'image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $estadoAnterior = Estado::find($incidencia->estado_id);
-        $incidencia->update($validated);
         $estadoNuevo = Estado::find($incidencia->estado_id);
+        //Actualizar evidencias
+        $incidencia->update($validated);
 
+
+        // Guardar nuevas evidencias si existen
+        if ($request->hasFile('evidencia')) {
+
+            foreach ($request->file('evidencia') as $file) {
+
+                if ($file && $file->isValid()) {
+
+                    $path = $file->store('evidencias', 'public');
+
+                    $incidencia->evidencias()->create([
+                        'usuario_id' => auth()->id(),
+                        'archivo' => $path,
+                        'tipo' => 'imagen',
+                        'descripcion' => 'Evidencia agregada al editar la incidencia.',
+                    ]);
+                }
+            }
+        }
         // Actualizar fecha de resolución
 
         $estadoResuelta = Estado::where('nombre', 'Resuelta')->first();

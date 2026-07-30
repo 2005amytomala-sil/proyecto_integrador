@@ -198,7 +198,7 @@
                         @error('evidencia')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
-                        <div class="text-muted small">Opcional: puedes agregar una imagen o documento de apoyo.</div>
+                        <div class="text-muted small">Importante: Debes agregar una imagen o documento de apoyo.</div>
                     </div>
                 </div>
 

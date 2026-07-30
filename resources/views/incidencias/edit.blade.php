@@ -264,7 +264,7 @@
                         @enderror
 
                         <div class="text-muted small mt-2">
-                            Opcional: puedes agregar una imagen o documento de apoyo.
+                            Importante: Debe conservar al menos una evidencia fotografica.
                         </div>
                     </div>
                 </div>
@@ -341,8 +341,18 @@
                 : files.length + ' archivos listos para subir';
         }
 
+        let archivosSeleccionados = new DataTransfer();
+
         input.addEventListener('change', function () {
+
+            Array.from(input.files).forEach(file => {
+                archivosSeleccionados.items.add(file);
+            });
+
+            input.files = archivosSeleccionados.files;
+
             updatePreview(input.files);
+
         });
 
         dropzone.addEventListener('dragover', function (event) {
