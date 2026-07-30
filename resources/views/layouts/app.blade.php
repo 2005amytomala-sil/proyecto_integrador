@@ -12,15 +12,16 @@
     ])
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     @include('components.sidebar')
 
     @include('components.navbar')
 
-    <main class="page-content">
+    <main class="page-content flex-grow-1">
         @yield('content')
     </main>
 
+    @include('components.footer')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
