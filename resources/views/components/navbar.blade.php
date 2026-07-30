@@ -24,12 +24,12 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="{{ route('perfil.mio')}}"><i class="bi bi-person me-2"></i>Perfil</a></li>
-            <li><a class="dropdown-item" href="#">Configuración</a></li>
+            <li><a class="dropdown-item" href="{{ route('configuracion.index')}}"><i class="bi bi-gear"></i> Configuración</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button class="dropdown-item" type="submit">Cerrar sesión</button>
+                    <button class="dropdown-item bi-box-arrow-right" type="submit"> Cerrar sesión</button>
                 </form>
             </li>
         </ul>
