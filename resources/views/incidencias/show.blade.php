@@ -134,30 +134,80 @@
                 <div class="card-body">
                     <h5 class="mb-3">Comentarios ({{ optional($incidencia->comentarios)->count() ?? 0 }})</h5>
 
+                    {{-- Alertas de feedback --}}
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
+                    {{-- Lista de Comentarios --}}
                     @if(optional($incidencia)->comentarios && $incidencia->comentarios->count())
                         @foreach($incidencia->comentarios as $comentario)
+                            @php
+                                $autor = $comentario->usuario; // Asumiendo relación 'usuario' en Comentario
+                                $nombreAutor = $autor ? trim($autor->nombres . ' ' . $autor->apellidos) : ($comentario->autor_nombre ?? 'Usuario');
+                                $inicial = strtoupper(substr($nombreAutor, 0, 1));
+                            @endphp
                             <div class="d-flex mb-3">
-                                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-3" style="width:40px;height:40px;">
-                                    {{ strtoupper(substr($comentario->autor_nombre ?? 'U',0,1)) }}
+                                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width:40px;height:40px;">
+                                    {{ $inicial }}
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="fw-semibold">{{ $comentario->autor_nombre ?? 'Usuario' }} <small class="text-muted">· {{ optional($comentario->created_at)->format('d/m/Y H:i') }}</small></div>
-                                    <div class="text-muted">{{ $comentario->texto ?? $comentario->contenido ?? '' }}</div>
+                                    <div class="fw-semibold">
+                                        {{ $nombreAutor }} 
+                                        <small class="text-muted">· {{ optional($comentario->created_at)->format('d/m/Y H:i') }}</small>
+                                    </div>
+                                    <div class="text-secondary">{{ $comentario->contenido ?? $comentario->texto }}</div>
                                 </div>
                             </div>
                         @endforeach
                     @else
-                        <div class="text-muted">No hay comentarios todavía.</div>
+                        <div class="text-muted mb-3">No hay comentarios todavía.</div>
                     @endif
 
-                    <div class="mt-3">
-                        <form action="#" method="POST">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Escribir un comentario...">
-                                <button class="btn btn-primary" type="button">Enviar</button>
-                            </div>
-                        </form>
-                    </div>
+                    {{-- Formulario para Agregar Comentario --}}
+                    @php
+                        $usuarioActivo = auth()->user();
+                        $rolActivo = $usuarioActivo->rol->nombre;
+                        
+                        // Verificar asignación para la vista
+                        $estaAsignado = $incidencia->asignaciones()
+                            ->where('usuario_id', $usuarioActivo->id)
+                            ->exists();
+
+                        $puedeComentar = ($rolActivo === 'Ciudadano' && $incidencia->ciudadano_id === $usuarioActivo->id) 
+                                        || $estaAsignado 
+                                        || $rolActivo === 'Administrador';
+                    @endphp
+
+                    @if($puedeComentar)
+                        <div class="mt-3">
+                            <form action="{{ route('incidencias.comentarios.store', $incidencia->id) }}" method="POST">
+                                @csrf
+                                <div class="input-group">
+                                    <input type="text" name="contenido" class="form-control @error('contenido') is-invalid @enderror" placeholder="Escribir un comentario..." required autocomplete="off">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="bi bi-send me-1"></i> Enviar
+                                    </button>
+                                </div>
+                                @error('contenido')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </form>
+                        </div>
+                    @else
+                        <div class="alert alert-light text-muted small mb-0 mt-3 border">
+                            <i class="bi bi-info-circle me-1"></i> Solo el ciudadano creador y el personal asignado a esta incidencia pueden dejar comentarios.
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

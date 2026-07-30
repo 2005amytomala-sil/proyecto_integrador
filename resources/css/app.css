@@ -400,3 +400,37 @@ body.sidebar-open .page-content {
 #graficoPrioridad{
     height:300px !important;
 }
+
+.app-footer {
+    background-color: #12385c; /* Azul corporativo oscuro idéntico al login */
+    color: #e2e8f0;
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    margin-left: 250px; /* Alineado con el layout principal */
+    transition: all 0.3s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-footer .footer-link {
+    color: #93c5fd; /* Azul claro accesible para enlaces */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.app-footer .footer-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* Ajustes Responsive cuando el Sidebar está abierto/oculto o en móviles */
+body.sidebar-open .app-footer {
+    margin-left: 0;
+}
+
+@media (max-width: 768px) {
+    .app-footer {
+        margin-left: 0;
+        text-align: center;
+    }
+}

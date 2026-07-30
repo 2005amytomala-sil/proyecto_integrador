@@ -25,6 +25,7 @@ return [
     | services the application utilizes. Set this in your ".env" file.
     |
     */
+    'admin_email' => env('ADMIN_EMAIL', 'stevenrosales141@gmail.com'),
 
     'env' => env('APP_ENV', 'production'),
 

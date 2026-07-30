@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/configuracion/perfil', [ConfiguracionController::class, 'updatePerfil'])->name('configuracion.updatePerfil');
     Route::put('/configuracion/password', [ConfiguracionController::class, 'updatePassword'])->name('configuracion.updatePassword');
 
+    Route::post('/incidencias/{incidencia}/comentarios', [ComentarioController::class, 'store'])->name('incidencias.comentarios.store');
 
     Route::get('/informes', [InformeController::class, 'index'])->name('informes.index');
 
