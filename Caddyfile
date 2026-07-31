@@ -1,0 +1,8 @@
+incidenciasec.duckdns.org {
+    root * /var/www/public
+    php_fastcgi app:9000
+    file_server
+
+    # Redirección de errores a Laravel
+    try_files {path} {path}/ /index.php?{query}
+}
