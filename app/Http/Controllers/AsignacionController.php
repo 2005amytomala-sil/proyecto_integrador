@@ -170,12 +170,7 @@ class AsignacionController extends Controller
      * Display the specified resource.
      */
     /*
-    public function show($id)
-    {
-        $incidencia = Incidencia::findOrFail($id);
-
-        dd($incidencia->getAttributes());
-    }
+    
     */
     public function show($id)
     {

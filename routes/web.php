@@ -72,6 +72,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/incidencias/{incidencia}/comentarios', [ComentarioController::class, 'store'])->name('incidencias.comentarios.store');
 
+    Route::delete('/evidencias/{evidencia}', [EvidenciaController::class, 'destroy'])
+    ->name('evidencias.destroy');
+
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+
+    Route::resource('users', UserController::class);
+
     Route::get('/informes', [InformeController::class, 'index'])->name('informes.index');
 
     Route::get('/informes/exportar/excel',[InformeController::class, 'exportarExcel']
@@ -79,6 +88,18 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/informes/exportar/pdf',[InformeController::class, 'exportarPDF']
     )->name('informes.exportar.pdf');
+});
+
+Route::middleware(['auth', 'admin_operador'])->group(function () {
+
+    Route::get('/asignaciones', [AsignacionController::class, 'index'])
+        ->name('asignaciones.index');
+
+    Route::get('/asignaciones/{incidencia}', [AsignacionController::class, 'show'])
+        ->name('asignaciones.show');
+
+    Route::post('/asignaciones/{incidencia}', [AsignacionController::class, 'store'])
+        ->name('asignaciones.store');
 
     Route::patch('/incidencias/{incidencia}/validar', [IncidenciaController::class, 'validar'])
     ->name('incidencias.validar');
@@ -86,8 +107,12 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/incidencias/{incidencia}/rechazar', [IncidenciaController::class, 'rechazar'])
     ->name('incidencias.rechazar');
 
+});
+
+Route::middleware(['auth', 'responsable'])->group(function () {
+
     Route::get('/mis-asignaciones', [AsignacionController::class, 'misAsignaciones'])
-    ->name('asignaciones.mias');
+        ->name('asignaciones.mias');
 
     Route::get('/mis-asignaciones/{id}', [AsignacionController::class, 'showResponsable'])
         ->name('asignaciones.mias.show');
@@ -97,24 +122,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::patch('/mis-asignaciones/{incidencia}/resolver',[IncidenciaController::class, 'resolver'])
     ->name('incidencias.resolver');
-    
-    Route::delete('/evidencias/{evidencia}', [EvidenciaController::class, 'destroy'])
-    ->name('evidencias.destroy');
-});
-
-Route::middleware(['auth', 'admin'])->group(function () {
-
-    Route::resource('users', UserController::class);
-
-    Route::get('/asignaciones', [AsignacionController::class, 'index'])
-    ->name('asignaciones.index');
-
-    Route::get('/asignaciones/{incidencia}', [AsignacionController::class, 'show'])
-    ->name('asignaciones.show');
-    
-    Route::post('/asignaciones/{incidencia}', [AsignacionController::class, 'store'])
-    ->name('asignaciones.store');
-
 
 });
+
+
+
 
