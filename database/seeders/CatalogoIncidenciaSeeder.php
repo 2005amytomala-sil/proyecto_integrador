@@ -24,7 +24,20 @@ class CatalogoIncidenciaSeeder extends Seeder
             'nombre' => 'Seguridad',
         ]);
 
+        $ambiente = TipoIncidencia::create([
+            'nombre' => 'Ambiente',
+        ]);
+
+        $servicios = TipoIncidencia::create([
+            'nombre' => 'Servicios públicos',
+        ]);
+
+        $espacios = TipoIncidencia::create([
+            'nombre' => 'Espacios públicos',
+        ]);
+
         SubtipoIncidencia::insert([
+            // Infraestructura
             [
                 'tipo_incidencia_id' => $infraestructura->id,
                 'nombre' => 'Alumbrado público',
@@ -38,8 +51,76 @@ class CatalogoIncidenciaSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'tipo_incidencia_id' => $infraestructura->id,
+                'nombre' => 'Semáforo dañado',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tipo_incidencia_id' => $infraestructura->id,
+                'nombre' => 'Señalización vial',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tipo_incidencia_id' => $infraestructura->id,
+                'nombre' => 'Alcantarillado',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Seguridad
+            [
                 'tipo_incidencia_id' => $seguridad->id,
                 'nombre' => 'Robo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tipo_incidencia_id' => $seguridad->id,
+                'nombre' => 'Accidente',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tipo_incidencia_id' => $seguridad->id,
+                'nombre' => 'Vandalismo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Ambiente
+            [
+                'tipo_incidencia_id' => $ambiente->id,
+                'nombre' => 'Basura acumulada',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tipo_incidencia_id' => $ambiente->id,
+                'nombre' => 'Árbol caído',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Servicios públicos
+            [
+                'tipo_incidencia_id' => $servicios->id,
+                'nombre' => 'Corte de agua',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'tipo_incidencia_id' => $servicios->id,
+                'nombre' => 'Fuga de agua',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Espacios públicos
+            [
+                'tipo_incidencia_id' => $espacios->id,
+                'nombre' => 'Parque deteriorado',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
