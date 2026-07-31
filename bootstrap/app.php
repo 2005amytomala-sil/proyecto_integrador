@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'admin_operador' => \App\Http\Middleware\AdminOperadorMiddleware::class,
+            'responsable' => \App\Http\Middleware\ResponsableMiddleware::class,
             ]);
     })
 
@@ -25,3 +27,4 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*'),
         );
     })->create();
+    

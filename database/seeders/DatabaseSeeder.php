@@ -16,12 +16,6 @@ class DatabaseSeeder extends Seeder
             UbicacionSeeder::class,
             CatalogoIncidenciaSeeder::class,
             UserSeeder::class,
-            IncidenciaSeeder::class,
-            AsignacionSeeder::class,
-            HistorialEstadoSeeder::class,
-            ComentarioSeeder::class,
-            EvidenciaSeeder::class,
-            NotificacionSeeder::class,
         ]);
     }
 }
