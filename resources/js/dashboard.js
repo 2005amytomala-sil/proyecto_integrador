@@ -1,17 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
     if (!document.querySelector('[data-page="dashboard"]')) return;
+    
+    Chart.register(ChartDataLabels);
 
     function createChart(context, type, labels, data, options = {}) {
         if (!context) return null;
 
         return new Chart(context, {
             type,
+
             data: {
                 labels,
                 datasets: [
                     {
                         label: options.label || '',
                         data,
+
                         backgroundColor: options.backgroundColor || [
                             '#3751FF',
                             '#0BC5EA',
@@ -21,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             '#A0AEC0',
                             '#F56565',
                         ],
+
                         borderColor: options.borderColor || '#3751FF',
                         borderWidth: options.borderWidth || 2,
                         fill: options.fill || false,
@@ -30,10 +35,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                 ],
             },
+
             options: {
+
                 responsive: true,
                 maintainAspectRatio: false,
+
                 plugins: {
+
                     legend: {
                         position: 'bottom',
                         labels: {
@@ -41,6 +50,25 @@ document.addEventListener('DOMContentLoaded', function () {
                             padding: 14,
                         },
                     },
+
+
+                    datalabels: {
+                        display: type === 'doughnut',
+
+                        color: '#000000',
+
+                        font: {
+                            size: 16,
+                            weight: 'bold',
+                        },
+
+                        formatter: (value) => value,
+
+                        anchor: 'center',
+                        align: 'center',
+                    },
+
+
                     tooltip: {
                         callbacks: {
                             label: function (context) {
@@ -50,10 +78,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                     },
                 },
+
+
                 scales: options.scales || {
                     y: {
-                        beginAtZero: options.beginAtZero !== undefined ? options.beginAtZero : true,
+                        beginAtZero: options.beginAtZero !== undefined 
+                            ? options.beginAtZero 
+                            : true,
+
                         min: options.min,
+
                         ticks: {
                             precision: 0,
                         },

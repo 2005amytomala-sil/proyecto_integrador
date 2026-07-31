@@ -67,7 +67,7 @@
 					<div class="d-flex justify-content-between align-items-center mb-3">
 						<div>
 							<h5 class="mb-1">Incidencias por prioridad</h5>
-							<p class="text-muted small mb-0">Volumen según urgencia</p>
+							<p class="text-muted small mb-0">Volumen por urgencia</p>
 						</div>
 					</div>
 					<div class="chart-wrapper mb-0">
@@ -152,5 +152,6 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     @vite('resources/js/dashboard.js')
 @endpush
