@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 plugins: {
 
-                    legend: {
+                    legend: options.legend === false ? false : {
                         position: 'bottom',
                         labels: {
                             usePointStyle: true,
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             createChart(
                 document.getElementById('prioridadChart'),
-                'doughnut',
+                'bar',
                 Object.keys(prioridades),
                 Object.values(prioridades),
                 {
@@ -284,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     backgroundColor: ['#2563eb', '#f59e0b', '#ef4444', '#10b981'],
                     borderWidth: 2,
                     pointRadius: 0,
+                    legend: false,
                 }
             );
 
