@@ -185,7 +185,8 @@
 
                         $puedeComentar = ($rolActivo === 'Ciudadano' && $incidencia->ciudadano_id === $usuarioActivo->id) 
                                         || $estaAsignado 
-                                        || $rolActivo === 'Administrador';
+                                        || $rolActivo === 'Administrador'
+                                        || $rolActivo === 'Operador';
                     @endphp
 
                     @if($puedeComentar)

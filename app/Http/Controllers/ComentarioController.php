@@ -41,7 +41,7 @@ class ComentarioController extends Controller
             ->where('usuario_id', $usuario->id)
             ->exists();
 
-        if (!$esCiudadanoCreador && !$esResponsableAsignado && $rol !== 'Administrador') {
+        if (!$esCiudadanoCreador && !$esResponsableAsignado && $rol !== 'Administrador' && $rol !='Operador') {
             return back()->with('error', 'No tienes permiso para comentar en esta incidencia.');
         }
 
